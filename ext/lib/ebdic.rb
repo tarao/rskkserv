@@ -259,9 +259,17 @@ module EPWAgent
   module WDIC
     extend EPWAgent
 
+    # 2004年後期版から見出しにカテゴリが付くようになった。
+    # 例:
+    # "ほげ"
+    #  => "ほげ 【電算:技術俗語】"
+    #  => "ほげ"
+
     module_function
     def format(kana, candidates)
-      candidates
+      candidates.map {|e|
+        e[0, e.index(" \xA1\xDA") || e.length]
+      }
     end
 
     def default_subbook

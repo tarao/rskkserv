@@ -8,7 +8,7 @@ $stdout.sync = true
 
 class TestEBDic <Test::Unit::TestSuite
   def self.suite
-    testsuite = TestEBDic.new 
+    testsuite = TestEBDic.new(self.name)
 
     testsuite << TestEBDicError.suite
 

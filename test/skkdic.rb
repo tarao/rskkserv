@@ -30,11 +30,10 @@ class TestSKKDic <Test::Unit::TestCase
   end
 
   def test_lookup_okuri_nasi_success
-    assert_equal("ÀÄ;Áó;ÊË;ðÐ", @skkdic.search("¤¢¤ª").join(";"))
-    assert_equal("¼ÙÇÏÂæ¹ñ;¼ÙÇÏÔå¹ñ;¼ÙÇÏçÊ¹ñ",
-		 @skkdic.search("¤ä¤Þ¤¿¤¤¤³¤¯").join(";"))
-    assert_equal("¡ª;´¶Ã²Éä", @skkdic.search("!").join(";"))
-    assert_equal("¡¦", @skkdic.search("¥Æ¥ó").join(";"))
+    assert_equal("ÀÄ,Áó,ÊË", @skkdic.search("¤¢¤ª").join(","))
+    assert_equal("¼ÙÇÏÂæ¹ñ,¼ÙÇÏçÊ¹ñ;µì»úº®ÞÂ",
+		 @skkdic.search("¤ä¤Þ¤¿¤¤¤³¤¯").join(","))
+    assert_equal("¡ª,´¶Ã²Éä", @skkdic.search("!").join(","))
   end
 
   def tear_down

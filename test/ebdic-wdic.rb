@@ -7,8 +7,12 @@ class TestEBDicWDic <TestEBDicCommon
     super("/opt/epwing/wdic")
   end
 
+  def test_format
+    check(["¤Û¤²"], format("¤Û¤²", ["¤Û¤²", "¤Û¤² ¡ÚÅÅ»»:µ»½ÑÂ¯¸ì¡Û"]))
+  end
+
   def test_search_not_found
-    check([""], search("¤¸¤å¤²¤à"))
+    check([""], search("¤¸¤å¤²¤à¤¸¤å¤²¤à"))
     check([""], search("\001\001"))
   end
 

@@ -11,12 +11,16 @@ class TestEBDicCommon <Test::Unit::TestCase
     @ebdic = EBDic.new(@path, mod, subbook)
   end
 
-  def join(arg)
-    arg.join(",")
-  end
-
   def search(kana)
     @ebdic.search(kana)
+  end
+
+  def format(kana, candidates)
+    @ebdic.instance_eval {@formatter.format(kana, candidates)}
+  end
+
+  def join(arg)
+    arg.join(",")
   end
 
   def check(expect, result)

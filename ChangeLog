@@ -1,3 +1,18 @@
+2004-11-04  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* configure.in:
+	  + VERSION=2.95.2
+	* skkserv/ebdic.rb:
+	As adapt to the wdic-fpw1.4 that the headline includes category,
+	remove category string from candidates.
+	* test/ebdic-common.rb:
+	(format) New method for EPWAgent::Module.format
+	* test/ebdic-wdic.rb:
+	(test_format) New test case for headline includes category or not.
+	* test/skkdic.rb:
+	(test_lookup_okuri_nasi_success) Follow up skkdic changes,
+	version 2004-03-23.
+	
 2004-11-02  YAMASHITA Junji  <ysjj@unixuser.org>
 
 	* Makefile.in:
