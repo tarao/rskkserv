@@ -1,7 +1,13 @@
+rskkserv (2.95.1-2) unstable; urgency=medium
+
+  * debian/init: use start-stop-daemon instead of pkill.
+	
+ -- YAMASHITA Junji <ysjj@unixuser.org>  Sun, 07 Dec 2003 23:21:33 +0900
+
 rskkserv (2.95.1-1) unstable; urgency=high
 
   * new upstream release.
-  * wrong install directory, thus urgency=high.
+  * install files to wrong directory, thus urgency=high.
   * debian/rules: Install skkserv.rb as rskkserv.
   * debian/init:
     + Correct the pkill usage.

@@ -1,35 +1,35 @@
-#!/bin/sh
+#!/bin/sh -e
 
-SKKSERV=/usr/sbin/rskkserv
+DAEMON=/usr/sbin/rskkserv
+NAME=rskkserv
+DESC="SKK dictionary server"
 
-test -x $SKKSERV || exit 0
+test -x $DAEMON || exit 0
+
+CONF=/etc/rskkserv.conf
+PIDFILE="`sed -ne 's/^[ 	]*pid[_ 	]*file[ 	]*=[ 	]*//p' $CONF`"
+PIDFILE=${PIDFILE:-/var/run/rskkserv.pid}
 
 case "$1" in
 start)
-	echo -n "Starting SKK dictionary server: "
-	if $SKKSERV; then
-		echo "rskkserv."
-	fi
+	echo -n "Starting $DESC: $NAME"
+	start-stop-daemon --start --oknodo --exec $DAEMON
+	echo "."
 	;;
 stop)
-	echo -n "Stopping SKK dictionary server: "
-	if pkill -u0 rskkserv; then
-		pkill -KILL -u0 rskkserv
-		echo "rskkserv."
-	else
-		echo "no rskkserv found running; none killed."
-	fi
+	echo -n "Stopping $DESC: $NAME"
+	start-stop-daemon --stop --oknodo --pidfile $PIDFILE --name $NAME
+	echo "."
 	;;
 force-reload|restart)
-	echo -n "Restarting SKK dictionary server: "
-	pkill -u0 rskkserv
-	pkill -KILL -u0 rskkserv
-	if $SKKSERV; then
-		echo "rskkserv."
-	fi
+	echo -n "Restarting $DESC: $NAME"
+	start-stop-daemon --stop --oknodo --pidfile $PIDFILE --name $NAME
+	sleep 1
+	start-stop-daemon --start --oknodo --exec $DAEMON
+	echo "."
 	;;
 *)
-	echo "Usage: /etc/init.d/rskkserv {start|stop|restart|force-reload}" >&2
+	echo "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload}"
 	exit 1
 	;;
 esac
