@@ -1,15 +1,14 @@
 ### test/ebdic-common.rb -- common route for unit test of ebdic modules
 
 require 'skkserv/ebdic.rb'
-require 'runit/testcase'
+require 'test/unit/testcase'
 
 $stdout.sync = true
 
-class TestEBDicCommon <RUNIT::TestCase
-  def setup(path, subdic)
+class TestEBDicCommon <Test::Unit::TestCase
+  def setup(path, mod = nil, subbook = nil)
     @path = path
-    @subdic = subdic
-    @ebdic = EBDic.new(@path, @subdic)
+    @ebdic = EBDic.new(@path, mod, subbook)
   end
 
   def join(arg)

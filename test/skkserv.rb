@@ -1,14 +1,16 @@
 # test/skkserv.rb --- test unit for communicate skkserv.rb process
 
-require 'runit/testcase'
 require 'socket'
+require 'test/unit/testcase'
 
 $stdout.sync = true
 
 $skkserv_hostname = "localhost"
 $skkserv_port = 21178
-$skkserv_version = "2.95.1"
-class SKKServTest <RUNIT::TestCase
+$skkserv_version = File.open("configure.in") {|f|
+  f.grep(/^VERSION=(.+)$/) do $1 end
+}[0]
+class TestSKKServ <Test::Unit::TestCase
   def setup
     @socket = TCPSocket.open($skkserv_hostname, $skkserv_port)
   end
@@ -58,7 +60,7 @@ class SKKServTest <RUNIT::TestCase
 
   def test_request_after_end
     client_end
-    assert_exception(EOFError) do
+    assert_raises(EOFError) do
       @socket.sysread(1024)
     end
   end
@@ -71,8 +73,8 @@ class SKKServTest <RUNIT::TestCase
 end
 
 if __FILE__ == $0
-  require 'runit/cui/testrunner'
-  RUNIT::CUI::TestRunner.run(SKKServTest.suite)
+  require 'test/unit/console/testrunner'
+  Test::Unit::UI::Console::TestRunner.run(TestSKKServ.suite)
 end
 
 # test/skkserv.rb ends here

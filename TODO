@@ -7,19 +7,20 @@ configure により自動生成されるものは Makefile と ext/extconf.rb。
 make により skkserv.rb、rskkserv.conf と ext/Makefile が生成される。
 
 ** 注
-モジュールのインストール先の自動判断は(まだ?)あまり使い勝手がよくないかも。
-
+モジュールのインストール先の自動判断はあまり使い勝手がよくないかも。
 
 * 2. 辞書のエンコーディングの取り扱いをはっきりさせる。
 skkdic.rb に shift_jis 対応のコード断片があるが、
 現在 euc-jp のみ動作確認している。
 
 ** done: 2003-11-15
-shift_jis 対応削除。
+Shift_JIS 対応不要と判断、削除。
+
+SKK-JISYO.L は EUC-JP で配布されており、MS-Windows プログラム SKKIME 
+もその辞書をそのまま利用している。
 
 * 3. 文書の整備
  README や拡張モジュールについて。
 
 ** EBDic の SUBDIC ディレクティブについて。
 不要?
-

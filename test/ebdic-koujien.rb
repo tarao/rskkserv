@@ -4,14 +4,16 @@ require 'test/ebdic-common'
 
 class TestEBDicKoujien <TestEBDicCommon
   def setup
-    super("/opt/epwing/koujien", "KOUJIEN")
+    super("/opt/epwing/koujien")
   end
 
-  def test_search
+  def test_search_not_found
     check([""], search("ほげ"))
     check([""], search("\001\001"))
     check([""], search("やんわり"))
+  end
 
+  def test_search
     check(["アートマン", "梵"], search("あーとまん"))
     check(["青", "襖"], search("あお"))
     check(["ウィ", "oui", "フランス"], search("うぃ"))
@@ -29,19 +31,21 @@ class TestEBDicKoujien <TestEBDicCommon
     check(["ワシントン", "Washington", "ワシントン", "Washington", "華盛頓"],
 	  search("わしんとん"))
     check(["走る", "奔る"], search("はしる"))
+  end
 
-    check(["狐", "九尾の狐", "虎の威を借る狐"], search("*きつね"))
-    check(["竹馬の友"], search("ちくばの*"))
+  def test_wildcard_not_found
     check([""], search("*"))
   end
 
-  def tear_down
+  def test_wildcard
+    check(["狐", "九尾の狐", "虎の威を借る狐"], search("*きつね"))
+    check(["竹馬の友"], search("ちくばの*"))
   end
 end
 
 if __FILE__ == $0
-  require 'runit/cui/testrunner'
-  RUNIT::CUI::TestRunner.run(TestEBDicKoujien.suite)
+  require 'test/unit/ui/console/testrunner'
+  Test::Unit::UI::Console::TestRunner.run(TestEBDicKoujien.suite)
 end
 
 # test/ebdic-koujien.rb ends here

@@ -1,11 +1,12 @@
 # test/conf.rb -- unit test for conf module,
 
 require "skkserv/conf"
-require "runit/testcase"
+require "test/unit/testcase"
+require "test/unit/testsuite"
 
 $stdout.sync = true
 
-class TestConf <RUNIT::TestSuite
+class TestConf <Test::Unit::TestSuite
   def self.suite
     testsuite = TestConf.new
     testsuite.add_test(TestConfNormal.suite)
@@ -13,7 +14,7 @@ class TestConf <RUNIT::TestSuite
     testsuite
   end
 
-  class TestConfNormal <RUNIT::TestCase
+  class TestConfNormal <Test::Unit::TestCase
     @@count = 0
     def setup
       @params = {
@@ -75,7 +76,7 @@ class TestConf <RUNIT::TestSuite
     end
 
     def test_assign_fail
-      assert_exception(NoMethodError) do # call private method
+      assert_raises(NoMethodError) do # call private method
         @conf.port = 21178
       end
     end
@@ -83,8 +84,8 @@ class TestConf <RUNIT::TestSuite
 end
 
 if __FILE__ == $0
-  require 'runit/cui/testrunner'
-  RUNIT::CUI::TestRunner.run(TestConf.suite)
+  require 'test/unit/ui/console/testrunner'
+  Test::Unit::UI::Console::TestRunner.run(TestConf.suite)
 end
 
 # test/conf.rb ends here

@@ -31,9 +31,42 @@ require "skkserv/logger"
 module EPWAgent
   GAIJI = "<?>"
 
-  module_function
   def gaiji_nasi?(str)
     str.index(GAIJI).nil?
+  end
+
+  def subbook(book, subbook_)
+    if subbook_
+      subbook = subbook_.upcase
+      unless self.support_subbook.include?(subbook)
+        raise "#{self}: #{subbook_}: unsupported subbook"
+      end
+    else
+      subbook = self.default_subbook
+    end
+
+    book.subbook_list.each do |n|
+      return n if book.directory(n).upcase == subbook
+    end
+
+    raise "#{subbook}: subbook not found"
+  end
+
+  def support_subbook
+    [default_subbook]
+  end
+
+  module_function
+  def find(book)
+    agents = constants.map {|m| const_get(m)}.select {|m| m.respond_to?(:support_subbook)};
+
+    book.subbook_list.map {|n| book.directory(n).upcase}.each do |subbook|
+      agents.each do |m|
+        return m if m.support_subbook.include?(subbook)
+      end
+    end
+
+    return nil
   end
 
   # 凡例:
@@ -46,6 +79,8 @@ module EPWAgent
   # (1) 外字を含む単語は変換候補に含めない。
   # (2) 送り仮名には対応していない。
   module KOUJIEN
+    extend EPWAgent
+
     # 例:
     # "あーとまん"
     #	=> "アートマン【<?>tman 梵】"
@@ -112,7 +147,7 @@ module EPWAgent
 	g1.gsub!(STEM_DELIMITER_EUCJP, "")
 	words = g1.split(WORD_DELIMITER_EUCJP)
 
-	if words.length == 1 and g1 != kana and EPWAgent::gaiji_nasi?(g1)
+	if words.length == 1 and g1 != kana and gaiji_nasi?(g1)
 	  result.push(g1)
 	end
 
@@ -130,13 +165,13 @@ module EPWAgent
       WORD_LANG_REGEXP =~ candidate
 
       if $1
-	result.push($1) if EPWAgent::gaiji_nasi?($1)
+	result.push($1) if gaiji_nasi?($1)
 	word = $2
       else
 	word = candidate
       end
 
-      return unless EPWAgent::gaiji_nasi?(word)
+      return unless gaiji_nasi?(word)
 
       word.sub!(SUBST_CHAR_EUCJP) do
 	if $`.empty?
@@ -150,10 +185,20 @@ module EPWAgent
 
       result.push(word)
     end
+
+    def support_subbook
+      [default_subbook, "KOJIEN"]
+    end
+
+    def default_subbook
+      "KOUJIEN"
+    end
   end
 
   # MYPAEDIA-fpw
   module MYPAEDIA
+    extend EPWAgent
+
     # 例:
     # "あーとまん"
     #	=> "アートマン (<?>tman)"
@@ -202,48 +247,35 @@ module EPWAgent
 
     def format_sub(result, candidate)
       candidate.split("/").each do |v|
-	result.push(v) if EPWAgent::gaiji_nasi?(v)
+	result.push(v) if gaiji_nasi?(v)
       end
+    end
+
+    def default_subbook
+      "MYPAEDIA"
     end
   end
 
   module WDIC
+    extend EPWAgent
+
     module_function
     def format(kana, candidates)
       candidates
     end
-  end
 
-  module NULLFormatter
-    module_function
-    def format(kana, candidates)
-      [candidates]
+    def default_subbook
+      "WDIC"
     end
   end
 end
 
 class EBDic
-  include EPWAgent
+  def initialize(path, mod = nil, subbook = nil)
+    @book = new_book(path)
+    @formatter = get_formatter(mod)
 
-  def initialize(path, subbook)
-    Logger::log(Logger::DEBUG, "path %s, subbook %s", path, subbook)
-    subbook.upcase!
-
-    @book = EB::Book.new
-    @book.bind(path)
-    @book.subbook = 0
-    @formatter = EPWAgent::NULLFormatter
-    @book.subbook_list.each do |n|
-      if @book.directory(n).upcase == subbook
-	@book.subbook = n
-	@formatter = EPWAgent.const_get(subbook)
-	break
-      end
-    end
-
-    if @book.directory.upcase != subbook
-      Logger::log(Logger::WARNING, "%s: %s: No such subbook", path, subbook)
-    end
+    @book.subbook = @formatter.subbook(@book, subbook)
   end
 
   def search(kana)
@@ -275,7 +307,32 @@ class EBDic
   end
 
   def self.create(path, options, config)
-    return EBDic.new(path, options["subbook"])
+    return EBDic.new(path, options["module"], options["subbook"])
+  end
+
+  private
+  def new_book(path)
+    result = EB::Book.new
+
+    begin
+      result.bind(path)
+    rescue RuntimeError
+      raise "#{path}: book not found"
+    end
+
+    result
+  end
+
+  def get_formatter(mod)
+    unless mod
+      result = EPWAgent.find(@book)
+      raise "#{@book.path}: Not found module for" unless result
+      return result
+    end
+
+    m = mod.upcase
+    raise "#{mod}: Unknown module" unless EPWAgent.constants.include?(m)
+    return EPWAgent.const_get(m)
   end
 end
 

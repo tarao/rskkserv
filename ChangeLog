@@ -1,3 +1,30 @@
+2003-11-22  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* test/conf.rb: Switch to Test::Unit from RUNIT.
+	* test/ebdic-common.rb: Ditto.
+	* test/ebdic-koujien.rb: Ditto.
+	* test/ebdic-mypaedia.rb: Ditto.
+	* test/ebdic-wdic.rb: Ditto.
+	* test/ebdic.rb: Ditto.
+	* test/skkdic.rb: Ditto.
+	* test/skkserv.rb: Ditto.
+	* doc/conf-o2n.rb: Added.
+
+2003-11-18  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* skkserv/ebdic.rb: Now module name and subbook are not requisite,
+	really optional.
+	
+2003-11-16  YAMASHITA Junji <ysjj@unixuser.org>
+
+	* make-dist.sh: Support making from CVS tree.
+	Remove doc generation.
+	Remove autoconf cache directory on distclean.
+	Extract the package version from configure.in.
+	* Makefile.in (test): Create missing symlink and directories.
+	(distclean): Remove working directories of test.
+	* skkserv.rb.in (mainloop): Responds exception as server error.
+	
 2003-11-15  YAMASHITA Junji  <ysjj@unixuser.org>
 
 	* configure.in:

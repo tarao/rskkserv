@@ -1,8 +1,8 @@
 # test/skkdic.rb -- unit test for skkdic module,
 #		    using SKK-JISYO.L (v1.30 2000/12/07 12:11:23)
 
-require "runit/testcase"
 require "skkserv/skkdic.rb"
+require "test/unit/testcase"
 
 $jisyo = "/usr/share/skk/SKK-JISYO.L"
 $cachedir = "/var/lib/rskkserv"
@@ -10,7 +10,7 @@ $nocache = nil
 
 $stdout.sync = true
 
-class SKKDicTest <RUNIT::TestCase
+class TestSKKDic <Test::Unit::TestCase
   def setup
     @skkdic = SKKDic.new($jisyo, $cachedir, $nocache)
   end
@@ -42,8 +42,8 @@ class SKKDicTest <RUNIT::TestCase
 end
 
 if __FILE__ == $0
-  require "runit/cui/testrunner"
-  RUNIT::CUI::TestRunner.run(SKKDicTest.suite)
+  require "test/unit/ui/console/testrunner"
+  Test::Unit::UI::Console::TestRunner.run(TestSKKDic.suite)
 end
 
 # test/skkdic.rb ends here

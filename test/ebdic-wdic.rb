@@ -4,23 +4,22 @@ require 'test/ebdic-common'
 
 class TestEBDicWDic <TestEBDicCommon
   def setup
-    super("/opt/epwing/wdic", "WDIC")
+    super("/opt/epwing/wdic")
+  end
+
+  def test_search_not_found
+    check([""], search("じゅげむ"))
+    check([""], search("\001\001"))
   end
 
   def test_search
-    check([""], search("じゅげむ"))
-    check([""], search("\001\001"))
-
     check(["はにゃーん", "はにゃ〜ん"], search("はにゃーん"))
-  end
-
-  def tear_down
   end
 end
 
 if __FILE__ == $0
-  require 'runit/cui/testrunner'
-  RUNIT::CUI::TestRunner.run(TestEBDicWDic.suite)
+  require 'test/unit/ui/console/testrunner'
+  Test::Unit::UI::Console::TestRunner.run(TestEBDicWDic.suite)
 end
 
 # test/ebdic-wdic.rb ends here

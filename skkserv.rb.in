@@ -238,13 +238,18 @@ USAGE
 	  cmdend = cmdbuf.index(?\ ) || cmdbuf.index(?\n) 
 	  kana = cmdbuf[1 .. (cmdend - 1)]
 	  ret = ""
-	  if kanji = @dictionary.search(kana)
-	    ret.concat(SERVER_FOUND)
-	    ret.concat(kanji)
-	  else
-	    ret.concat(SERVER_NOT_FOUND)
-	    ret.concat(cmdbuf[1 .. -1])
-	  end
+          begin
+            if kanji = @dictionary.search(kana)
+              ret.concat(SERVER_FOUND)
+              ret.concat(kanji)
+            else
+              ret.concat(SERVER_NOT_FOUND)
+              ret.concat(cmdbuf[1 .. -1])
+            end
+          rescue Exception
+            ret.concat(SERVER_ERROR)
+            ret.concat($!)
+          end
 #	  Logger::log(Logger::DEBUG, "send: \"%s\"", ret)
 	  s.write(ret)
 	when CLIENT_VERSION

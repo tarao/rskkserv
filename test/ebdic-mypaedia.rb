@@ -4,13 +4,15 @@ require 'test/ebdic-common'
 
 class TestEBDicMypaedia <TestEBDicCommon
   def setup
-    super("/opt/epwing/mypaedia", "MYPAEDIA")
+    super("/opt/epwing/mypaedia")
+  end
+
+  def test_search_not_found
+    check([""], search("ほげ"))
+    check([""], search("\001\001"))
   end
 
   def test_search
-    check([""], search("ほげ"))
-    check([""], search("\001\001"))
-
     check(["アートマン"], search("あーとまん"))
     check(["尾鷲"], search("おわせ"))
     check(["カラス", "Maria Callas", "カラス", "烏", "香良洲"],
@@ -22,14 +24,11 @@ class TestEBDicMypaedia <TestEBDicCommon
     check(["匂い", "臭い"], search("におい"))
     check(["しし座", "獅子座"], search("ししざ"))
   end
-
-  def tear_down
-  end
 end
 
 if __FILE__ == $0
-  require 'runit/cui/testrunner'
-  RUNIT::CUI::TestRunner.run(TestEBDicMypaedia.suite)
+  require 'test/unit/ui/console/testrunner'
+  Test::Unit::UI::Console::TestRunner.run(TestEBDicMypaedia.suite)
 end
 
 # test/ebdic-mypaedia.rb ends here
