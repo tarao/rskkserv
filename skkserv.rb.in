@@ -61,22 +61,18 @@ class SKKServer
     skkserv = nil
     begin
       @config = Conf.new($OPT_config || DEFAULT_CONFILE)
-      require "skkserv/skkdic"
-      require "skkserv/ebdic"
 
       skkserv = new(ARGV[0], @config)
 
       daemon if daemon?
-      if @config.pid_file
-	add_pid(@config.pid_file)
-      end
+      write_pid(@config.pid_file) if @config.pid_file
 
       skkserv.mainloop
     rescue LoadError
       $stderr.printf("%s: %s\n", $0, $!)
       exit(1)
     rescue Errno::EADDRINUSE
-      $stderr.print("rskkserv is already running.\n")
+      $stderr.print("probably rskkserv is already running on port #{@config.port}.\n")
       exit(1)
     rescue
       $stderr.printf("%s: %s\n\t%s\n", $0, $!, $@.join("\n\t"))
@@ -118,69 +114,23 @@ USAGE
     end
   end
 
-  def SKKServer.add_pid(filename)
+  def SKKServer.write_pid(filename)
     begin
-      f = open(filename, "a")
-      f.flock(File::LOCK_EX)
+      f = open(filename, "w")
       f.printf("%d\n", $$)
     rescue Errno::EACCES
       $stderr.printf("failed to write pid(%d)\n", $$);
+      return
     ensure
-      if f
-	f.flock(File::LOCK_UN)
-	f.close
-      end
+      f.close
     end
 
     signal_handler = Proc.new {
-	remove_pid(@config.pid_file)
+	File.unlink(@config.pid_file) if File.exists?(@config.pid_file)
 	exit 0
     }
     for signal in ["INT", "TERM"]
       trap(signal, &signal_handler)
-    end
-  end
-
-  def SKKServer.remove_pid(filename)
-    begin
-      filename_tmp = filename + ".tmp"
-
-      max_retry = 10;
-      nretry = 0;
-
-      f = open(filename, "r")
-      while (! f.flock(File::LOCK_EX | File::LOCK_NB))
-	f.close
-
-	nretry += 1;
-	if nretry > max_retry
-	  raise RuntimeError, "couldn't lock #{filename}"
-	end
-
-	sleep 1
-	f = open(filename, "r");
-      end
-      f_tmp = open(filename_tmp, "w")
-
-      f.each do |line|
-	next if line.to_i == $$
-	f_tmp.print line
-      end
-
-      f_tmp.close
-
-      File.rename(filename_tmp, filename)
-
-      f.flock(File::LOCK_UN)
-      f.close
-
-      File.delete(filename) if File.size(filename) == 0
-    rescue Errno::EACCES, RuntimeError
-      Logger::log(Logger::CRIT, "%s, failed to remove pid(%d)", $!, $$);
-      $stderr.printf("%s, failed to remove pid(%d)\n", $!, $$);
-    ensure
-      f.close if f and !f.closed?
-      f_tmp.close if f_tmp and !f_tmp.closed?
     end
   end
 
@@ -374,9 +324,25 @@ class SKKDictionary
 
   def create_agent(dic)
     /^([^:]+):(.*)$/ =~ dic
-    backend,path = $1.upcase.concat("Dic"),$2
+    klass = $1.upcase + "Dic"
+    location = $2
 
-    return Module.const_get(backend).create(path, dic.options, @config)
+    begin
+      return Module.const_get(klass).create(location, dic.options, @config)
+    rescue NameError
+      load_backend(klass)
+      retry
+    end
+  end
+
+  def load_backend(klass)
+    feature = "skkserv/#{klass.downcase}"
+    begin
+      require(feature) or
+	raise "probably #{klass} isn't defined in #{feature}"
+    rescue LoadError
+      raise "failed to load #{feature} for #{klass}"
+    end
   end
 end
 

@@ -10,16 +10,16 @@ class TestEBDic <Test::Unit::TestSuite
   def self.suite
     testsuite = TestEBDic.new 
 
-    testsuite.add_test(TestEBDicError.suite)
+    testsuite << TestEBDicError.suite
 
     load 'test/ebdic-koujien.rb'
-    testsuite.add_test(TestEBDicKoujien.suite)
+    testsuite << TestEBDicKoujien.suite
 
     load 'test/ebdic-mypaedia.rb'
-    testsuite.add_test(TestEBDicMypaedia.suite)
+    testsuite << TestEBDicMypaedia.suite
 
     load 'test/ebdic-wdic.rb'
-    testsuite.add_test(TestEBDicWDic.suite)
+    testsuite << TestEBDicWDic.suite
 
     testsuite
   end

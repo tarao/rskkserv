@@ -1,3 +1,9 @@
+2004-02-08  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* skkserv.rb.in:
+	Simplify the code of pid file. Now one pid is in the file.
+	Lazy load the dictionary agent libraries.
+
 2003-11-22  YAMASHITA Junji  <ysjj@unixuser.org>
 
 	* test/conf.rb: Switch to Test::Unit from RUNIT.

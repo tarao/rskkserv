@@ -73,7 +73,7 @@ class TestSKKServ <Test::Unit::TestCase
 end
 
 if __FILE__ == $0
-  require 'test/unit/console/testrunner'
+  require 'test/unit/ui/console/testrunner'
   Test::Unit::UI::Console::TestRunner.run(TestSKKServ.suite)
 end
 

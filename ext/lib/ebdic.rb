@@ -19,13 +19,13 @@
 
 ### Code:
 
+require "skkserv/logger"
+
 begin
   require "eb"
 rescue LoadError
   Logger::log(Logger::INFO, "failed to load eb")
 end
-
-require "skkserv/logger"
 
 # ddskk/skk-vars.el の skk-lookup-option-alist 変数を参考にした。
 module EPWAgent
