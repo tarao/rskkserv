@@ -1,0 +1,17 @@
+Source: rskkserv
+Section: utils
+Priority: optional
+Maintainer: Shugo Maeda <shugo@netlab.co.jp>
+Build-Depends: debhelper (>> 3.0.0), libc6-dev, ruby1.8, ruby1.8-dev, libeb7-dev
+Standards-Version: 3.5.2
+
+Package: rskkserv
+Architecture: any
+Depends: ruby, skkdic, ${shlibs:Depends}
+Recommends: libwrap-ruby
+Suggests: skkdic-extra, libeb-ruby
+Provides: skkserv
+Conflicts: skkserv
+Replaces: skkserv
+Description: SKK Dictionary server implemented by Ruby
+ rskkserv is an alternate version of skkserv implemented by Ruby.

@@ -1,0 +1,380 @@
+#!@RUBY@
+### skkserv.rb --- rskkserv main routines         -*- Mode: Ruby -*-
+
+## Copyright (C) 1997-2000  Shugo Maeda
+## Copyright (C) 2000,2001  YAMASHITA Junji
+
+## Author:	Shugo Maeda <shugo@aianet.ne.jp>
+## Maintainer:	YAMASHITA Junji <ysjj@unixuser.org>
+## Version:	@VERSION@
+
+## This file is part of rskkserv.
+
+## This program is free software; you can redistribute it and/or
+## modify it under the terms of the GNU General Public License as
+## published by the Free Software Foundation; either version 2, or (at
+## your option) any later version.
+
+## This program is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+
+### Code:
+
+require "thread"
+require "socket"
+require "getopts"
+
+require "skkserv/conf"
+require "skkserv/logger"
+
+getopts("d", "p:", "config:", "help", "verbose", "version")
+
+class SKKServer
+  VERSION_STRING = "rskkserv-@VERSION@ "
+  
+  DEFAULT_CONFILE = "@sysconfdir@/rskkserv.conf"
+  
+  CLIENT_END = ?0
+  CLIENT_REQUEST = ?1
+  CLIENT_VERSION = ?2
+  CLIENT_HOST = ?3
+  
+  SERVER_ERROR = ?0
+  SERVER_FOUND = ?1
+  SERVER_NOT_FOUND = ?4
+  SERVER_FULL = ?9
+  
+  BUFSIZE = 512
+  
+  def SKKServer.main
+    if $OPT_help
+      usage
+      exit(0)
+    end
+    if $OPT_version
+      print("SKK SERVER ", VERSION_STRING, "\n")
+      exit(0)
+    end
+    
+    skkserv = nil
+    begin
+      @config = Conf.new($OPT_config || DEFAULT_CONFILE)
+      require "skkserv/skkdic"
+      require "skkserv/ebdic"
+
+      skkserv = new(ARGV[0], @config)
+
+      daemon if daemon?
+      if @config.pid_file
+	add_pid(@config.pid_file)
+      end
+
+      skkserv.mainloop
+    rescue LoadError
+      $stderr.printf("%s: %s\n", $0, $!)
+      exit(1)
+    rescue Errno::EADDRINUSE
+      $stderr.print("rskkserv is already running.\n")
+      exit(1)
+    rescue
+      $stderr.printf("%s: %s\n\t%s\n", $0, $!, $@.join("\n\t"))
+      exit(1)
+    end
+  end
+  
+  def SKKServer.usage
+    $stderr.printf(<<USAGE, $0)
+Usage: %s [OPTION] [skk-dictionary-file]
+
+  -d                    debug mode
+  -p port               open server using specified port
+  --config              specify configuration file
+  --help                display this help and exit
+  --verbose             verbose mode
+  --version             output version information and exit
+USAGE
+
+  end
+
+  def SKKServer.daemon?
+    @config.daemon and ! $OPT_d
+  end
+
+  def SKKServer.daemon
+    exit!(0) if fork
+    Process::setsid
+    exit!(0) if fork
+    Dir::chdir("/")
+    File::umask(022)
+    STDIN.reopen(open("/dev/null", "r"))
+    begin
+      console = open("/dev/console", "w")
+      STDOUT.reopen(console)
+      STDERR.reopen(console)
+    rescue Errno::EACCES
+      $stderr.print("failed to open console.\n")
+    end
+  end
+
+  def SKKServer.add_pid(filename)
+    begin
+      f = open(filename, "a")
+      f.flock(File::LOCK_EX)
+      f.printf("%d\n", $$)
+    rescue Errno::EACCES
+      $stderr.printf("failed to write pid(%d)\n", $$);
+    ensure
+      if f
+	f.flock(File::LOCK_UN)
+	f.close
+      end
+    end
+
+    signal_handler = Proc.new {
+	remove_pid(@config.pid_file)
+	exit 0
+    }
+    for signal in ["INT", "TERM"]
+      trap(signal, &signal_handler)
+    end
+  end
+
+  def SKKServer.remove_pid(filename)
+    begin
+      filename_tmp = filename + ".tmp"
+
+      max_retry = 10;
+      nretry = 0;
+
+      f = open(filename, "r")
+      while (! f.flock(File::LOCK_EX | File::LOCK_NB))
+	f.close
+
+	nretry += 1;
+	if nretry > max_retry
+	  raise RuntimeError, "couldn't lock #{filename}"
+	end
+
+	sleep 1
+	f = open(filename, "r");
+      end
+      f_tmp = open(filename_tmp, "w")
+
+      f.each do |line|
+	next if line.to_i == $$
+	f_tmp.print line
+      end
+
+      f_tmp.close
+
+      File.rename(filename_tmp, filename)
+
+      f.flock(File::LOCK_UN)
+      f.close
+
+      File.delete(filename) if File.size(filename) == 0
+    rescue Errno::EACCES, RuntimeError
+      Logger::log(Logger::CRIT, "%s, failed to remove pid(%d)", $!, $$);
+      $stderr.printf("%s, failed to remove pid(%d)\n", $!, $$);
+    ensure
+      f.close if f and !f.closed?
+      f_tmp.close if f_tmp and !f_tmp.closed?
+    end
+  end
+
+  def initialize(dic, config)
+    @config = config
+    Logger::level = $OPT_d ? Logger::DEBUG : Logger.const_get(@config.log_level)
+    Logger::verbose = $OPT_verbose
+    Logger::filename = @config.log_file
+
+    Logger::log(Logger::DEBUG, "running on %s", host)
+
+    service = $OPT_p || @config.port || "skkserv"
+    begin
+      @server = if @config.host
+		  TCPserver.open(@config.host, service)
+		else
+		  TCPserver.open(service)
+		end
+    rescue
+      if service == "skkserv"
+	service = 1178
+	retry
+      else
+	raise
+      end
+    end
+
+    Logger::log(Logger::DEBUG,
+		"listen to %s", @server.addr[1..-1].join(":"))
+
+    if @config.tcpwrap
+      begin
+	require "tcpwrap"
+	@server = TCPWrapper.new(File.basename($0), @server, true)
+	Logger::log(Logger::INFO, "loaded tcpwrap")
+      rescue LoadError
+	Logger::log(Logger::INFO, "failed to load tcpwrap")
+      end
+    end
+
+    @dictionary = SKKDictionary.new(@config, dic)
+    @nclients = 0
+  end
+  
+  def mainloop
+    accept_clients do |s|
+      peer = peer_string(s)
+      while cmdbuf = s.sysread(BUFSIZE)
+	case cmdbuf[0]
+	when CLIENT_END
+	  Logger::log(Logger::DEBUG, "message from client %s: END", peer)
+	  break
+	when CLIENT_REQUEST
+#	  Logger::log(Logger::DEBUG, "message from client %s: WORD", peer)
+	  cmdend = cmdbuf.index(?\ ) || cmdbuf.index(?\n) 
+	  kana = cmdbuf[1 .. (cmdend - 1)]
+	  ret = ""
+	  if kanji = @dictionary.search(kana)
+	    ret.concat(SERVER_FOUND)
+	    ret.concat(kanji)
+	  else
+	    ret.concat(SERVER_NOT_FOUND)
+	    ret.concat(cmdbuf[1 .. -1])
+	  end
+#	  Logger::log(Logger::DEBUG, "send: \"%s\"", ret)
+	  s.write(ret)
+	when CLIENT_VERSION
+	  Logger::log(Logger::DEBUG, "message from client %s: VERSION", peer)
+	  Logger::log(Logger::DEBUG, "send: \"%s\"", VERSION_STRING)
+	  s.write(VERSION_STRING)
+	when CLIENT_HOST
+	  ret = host(s)
+	  Logger::log(Logger::DEBUG, "message from client %s: HOST", peer)
+	  Logger::log(Logger::DEBUG, "send: \"%s\"", ret)
+	  s.write(ret)
+	else
+	  Logger::log(Logger::NOTICE,
+		      "message from client %s: UNKNOWN: %d/\"%s\"",
+		      peer, cmdbuf[0], cmdbuf)
+	end
+      end
+    end
+  end
+  
+  private
+  def accept_clients
+    loop do
+      s = @server.accept
+
+      peer = peer_string(s)
+
+      Logger::log(Logger::INFO, "%s is accepted.", peer)
+      if @nclients >= @config.max_clients
+	begin
+	  s.putc(SERVER_FULL)
+	  Logger::log(Logger::WARNING,
+		      "%s: Connection rejected: %d: too many clients.",
+		      peer, @nclients)
+	ensure
+	  s.shutdown
+	  s.close
+	  next
+	end
+      end
+      @nclients += 1
+      Logger::log(Logger::DEBUG, "There are %d clients.", @nclients)
+      Thread.start do
+	begin
+	  yield(s)
+	rescue Exception
+	  Logger::log(Logger::DEBUG, "%s: %s", $!, peer)
+	ensure
+	  s.shutdown
+	  s.close
+	  Logger::log(Logger::INFO, "%s is gone.", peer)
+	  @nclients -= 1
+	  Logger::log(Logger::DEBUG, "There are %d clients.", @nclients)
+	end
+      end
+    end
+  end
+
+  def host(sock = nil)
+    if sock.nil?
+      hostname = (@server and @server.addr[2]) || Socket.gethostname
+      ipaddr = (@server and @server.addr[3]) || TCPSocket.getaddress(hostname)
+    else
+      hostname, ipaddr = sock.addr[2], sock.addr[3]
+    end
+
+    hostname + ":" + ipaddr + ": "
+  end
+
+  def peer_string(s)
+    peerport = s.peeraddr[1].to_s
+    if s.peeraddr[2] and s.peeraddr[2].length > 0
+      peerhost = s.peeraddr[2]
+    else
+      peerhost = s.peeraddr[3]
+    end
+
+    peerhost.concat(":").concat(peerport)
+  end
+end
+
+class SKKDictionary
+  def initialize(config, dic)
+    @search_agents = []
+    @config = config
+
+    unless dic.nil? or dic.empty?
+      agent = SKKDic.new(dic,
+			 @config.skk_cache_dir,
+			 @config.skk_no_cache)
+      Logger::log(Logger::DEBUG, "add agent: %s", agent)
+      @search_agents.push(agent)
+    end
+
+    @config.dic.each do |dic|
+      Logger::log(Logger::DEBUG, "add dic = #{dic}")
+      @search_agents.push(create_agent(dic))
+    end
+
+    raise "No search agents!" if @search_agents.empty?
+
+    @mutex = Mutex.new
+  end
+
+  def search(kana)
+#    Logger::log(Logger::DEBUG, "search: \"%s\"", kana)
+
+    @mutex.synchronize do
+      candidates = []
+
+      @search_agents.each do |agent|
+	candidates |= agent.search(kana)
+      end
+      return nil if candidates.empty?
+
+      candidates.delete(kana)
+      "/" << candidates.join("/") << "/\n"
+    end
+  end
+
+  private
+
+  def create_agent(dic)
+    /^([^:]+):(.*)$/ =~ dic
+    backend,path = $1.upcase.concat("Dic"),$2
+
+    return Module.const_get(backend).create(path, dic.options, @config)
+  end
+end
+
+SKKServer.main
+
+### skkserv.rb ends here

@@ -1,0 +1,73 @@
+.\" a manual page for rskkserv
+.\" 
+.\" Copyright (c) 2002 by SATOH Satoru <ss@gnome.gr.jp>
+.\" This manual page may be freely distributed and modified. 
+.\"
+.TH RSKKSERV "1" "February 2002" "rskkserv @VERSION@"
+.SH 名前
+rskkserv \- Ruby で実装された SKK 用辞書サーバ
+.SH 書式
+.B rskkserv
+[\fIOPTION\fR] [\fIskk-dictionary-file\fR]
+.SH 説明
+.TP
+\fB\-d\fR, \fB\-\-debug\fR
+デバッグモード
+.TP
+\fB\-p\fR\fIport\fR
+指定ポートを利用してサーバを起動
+.TP
+\fB\-\-config\fR \fICONFIGFILE\fR
+設定ファイルを指定
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+ヘルプを表示して終了
+.TP
+\fB\-v\fR
+冗長モード
+\fB\-V\fR, \fB\-\-version\fR
+バージョン情報を表示して終了
+.TP
+rskkserv は広く知られている日本語の仮名漢字変換プログラムの一つである、
+SKK (= Simple Kana-to-Kanji conversion program) のために、辞書を管理する
+プログラムです。
+.PP
+SKK の辞書サーバプログラムは他にもいくつかありますが、それらと比較すると
+rskkserv にはいくつかの長所(様々な形式の辞書のサポートや ruby で書かれている
+ので拡張性に優れるなど)を持っています。
+.TP
+.I [skk-dictionaries]
+利用する辞書を指定します。rskkserv は標準的な形式の辞書(これらは
+SKK OpenLab.: http://openlab.ring.gr.jp/skk/ から入手可能です)だけでなく、
+EBdic 形式の辞書もサポートしています (ただし、libeb:
+http://www.sra.co.jp/people/m-kasahr/eb/ と libeb-ruby:
+http://www.threeweb.ad.jp/~nyasu/software/ruby.html#rubyeb が必要となります)。
+.I [CONFFILE]
+は rskkserv の設定ファイルを指定します。システム設定ファイルは利用する
+辞書のパスを指定しますが、通常は /etc/rskkserv.conf としてインストール
+され、このシステム標準の設定を利用するのであればこのオプションを指定する
+必要はありません。
+.PP
+もし \fIskk-dictionaries\fR パラメータが与えられていない場合、プログラムは
+辞書の置いてあるディレクトリをシステム設定ファイルから決定しようとします。
+.PP
+\fB\-d\fR オプションを指定してプログラムをデバッグモードで動作させると、
+デバッグのためのより冗長な情報を表示されます。
+.SH 著者
+佐藤 暁
+.SH バグ
+バグ報告は YAMASHITA Junji <ysjj@unixuser.org> までどうぞ。
+.SH 著作権
+Copyright \(co 2002 SATOH Satoru <ss@gnome.gr.jp>
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH 関連ファイル、コマンド
+\fBskkinput\fR(1), \fBhosts_access\fR(5)
+.SH 作者
+rskkserv は YAMASHITA Junji <ysjj@unixuser.org> が開発・保守しています。
+最新バージョンは
+http://www.ruby-lang.org/en/raa-update.rhtml?name=rskkserv
+から入手可能です。
+.LP
+このマニュアルページは佐藤 暁 <ss@gnome.gr.jp> が書きました。

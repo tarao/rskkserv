@@ -1,0 +1,72 @@
+.\" a manual page for rskkserv
+.\" 
+.\" Copyright (c) 2002 by SATOH Satoru <ss@gnome.gr.jp>
+.\" This manual page may be freely distributed and modified. 
+.\"
+.TH RSKKSERV "1" "February 2002" "rskkserv @VERSION@"
+.SH NAME
+rskkserv \- an alternate version of skkserv for Ruby
+.SH SYNOPSIS
+.B rskkserv
+[\fIOPTION\fR] [\fIskk-dictionary-file\fR]
+.SH DESCRIPTION
+.TP
+\fB\-d\fR, \fB\-\-debug\fR
+debug mode
+.TP
+\fB\-p\fR\fIport\fR
+open server using specified port
+.TP
+\fB\-\-config\fR \fICONFIGFILE\fR
+specify the configuration file
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+display a help message and exit
+.TP
+\fB\-v\fR
+verbose mode
+\fB\-V\fR, \fB\-\-version\fR
+display version information and exit
+.TP
+rskkserv is yet another server program manages the dictionaries for SKK
+(= Simple Kana-to-Kanji conversion program), one of the popular 
+Kana-Kanji conversion programs for Japanese.
+.PP
+Compared with the other skkserv implementations, rskkserv has some
+advantages; support for various formated dictionaries, easiness to extend
+as written in ruby and so on.
+.TP
+.I [skk-dictionaries]
+specifies the dictionaries to use. rskkserv doesn't only supports the
+standard-style dictionaries, you can download from SKK Open Lab.:
+http://openlab.ring.gr.jp/skk/, but also supports the EBdic dictionaries
+(Note: you need libeb: http://www.sra.co.jp/people/m-kasahr/eb/ and
+libeb-ruby: http://www.threeweb.ad.jp/~nyasu/software/ruby.html#rubyeb).
+.I [CONFFILE]
+specifies the system configuration file for rskkserv. The system
+configuration file, indicates the path to the dictionaris to use,
+is installed at /etc/rskkserv.conf and you only need this for the case
+you don't use this system default configuration.
+.PP
+If the \fIskk-dictionaries\fR parameter is not given, the program trys to
+determine them from the system configuration file(CONFFILE). 
+.PP
+When used with the \fB\-d\fR option the program runs on debug mode, so
+that the detailed information to debugging will be printed out.
+.SH "AUTHOR"
+Written by SATOH Satoru
+.SH "REPORTING BUGS"
+Report bugs to <ysjj@unixuser.org>
+.SH "COPYRIGHT"
+Copyright \(co 2002 SATOH Satoru <ss@gnome.gr.jp>
+.br
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+.SH "SEE ALSO"
+\fBskkinput\fR(1), \fBhosts_access\fR(5)
+.SH AUTHORS
+rskkserv is developed by YAMASHITA Junji <ysjj@unixuser.org>
+The latest version of rskkserv can be found at
+http://www.ruby-lang.org/en/raa-update.rhtml?name=rskkserv
+.LP
+This manual page was written by SATOH Satoru <ss@gnome.gr.jp>.

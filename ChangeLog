@@ -1,0 +1,344 @@
+2003-11-15  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* configure.in:
+	  + VERSION=2.95.1
+	  + s/NOLOG/nolog/
+	* skkserv/conf.rb: added.
+	  new configuration infrastructure.
+	    - new configuration file format.
+	    - new configuraiton class Conf.
+	* test/conf.rb: added.
+	  testsuite for skkserv/conf.rb
+	* skkserv.rb.in:
+	  + adapt to the new config infra.
+	  + pid file is close iff it isn't closed.
+	  + remove messy dummy module definition, it isn't work with
+	    ruby1.8 and be needless by new config infra. 
+	* skkserv/skkdic.rb:
+	  + adapt to the new config infra.
+	  + remove kcode/sjis support.
+	* skkserv/ebdic.rb:
+	  + adapt to the new config infra.
+	  + no error on the loading even if the eb library isn't exist.
+	* rskkserv.conf.in: rewritten with new config file format.
+	* Makefile.in: add the test target for testing.
+	
+2003-10-08  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* rskkserv: 2.94.13 release
+	* skkserv.rb.in: use explicit exit status value 0
+	   when become to be daemon.
+
+2003-09-24  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* skkserv.rb.in: ruby1.8, Object#type is deprecated.
+	  use Object#class instead.
+
+2003-04-12  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* skkserv.rb.in: merge patch to limit the binding interface.
+
+2001-11-20  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* skkserv/ebdic.rb (MYPAEDIA.format):
+	  pass at the added test case.
+	  
+	* test/ebdic-mypaedia.rb:
+	  add test case.
+
+2001-11-19  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* rskkserv: 2.94.12a release
+
+	* Makefile.in: replace "\x40...\x40" to "@...\@".
+	  @...\@ is safe expression for configure.
+	
+	* configure.in:  merge patch partially from 
+	  SATO Satoru <ssato@redhat.com>
+	* rskkserv.spec.in: ditto.
+	* skkserv.rb.in: ditto.
+
+2001-10-18  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* rskkserv.spec.in: added.
+	  Thanks to SATO Satoru <ssato@redhat.com>
+
+	* configure.in: added rskkserv.spec to AC_OUTPUT.
+
+2001-08-14  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* rskkserv: 2.94.12 release
+
+	* make-dist.sh: New.
+
+2001-08-13  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* debian/: New.
+
+	* ext/depend.in: Removed.
+
+	* skkserv.rb.in:
+	  + remove library path args to ruby interpreter.
+	  + (Module#each_module): Added.
+	  + (SKKDictionary#initialize): use above method.
+
+	* ext/lib/skkdic.rb, ext/lib/ebdic.rb:
+	  (create_search_agents): use each_module.
+
+	* Makefile.in: Now ext/* are rss-installed.
+
+	* ext/extconf.rb.in (create_depend): New.
+	  create ext/depend, that include the target rss-install.
+
+2001-07-23  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* Makefile.in (README, INSTALL): New targets.
+
+	* rskkserv.conf.sample (PID_FILE, LOG_FILE, SKKDic::CACHEDIR):
+	  use "./var" directory.
+
+	* skkserv.rb.in (SKKDictionary#initialize):
+	  + Logging what agents will be used.
+	  + no use constants reversal.
+	
+	* doc/README.rd.ja, doc/INSTALL.rd.ja: New.
+
+	* doc/README.old: renamed from README.
+	
+	* ext/skkdic.c (Init_skkdic): fix load path order problem.
+
+	* skkserv/logger.rb (@@time_format): change default value.
+
+	* skkserv/skkdic.rb (SKKDic#to_s): New method.
+	* skkserv/ebdic.rb (EBDic#to_s): Likewise.
+	
+	* test/skkserv.rb (test_z): removed.
+
+	* test/skkdic.rb (test_lookup_okuri_nasi_success):
+	  add "¤¢¤ª".
+	
+2001-07-17  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* Makefile.in:
+	  + rubylib: renamed rubylibdir
+	  + RLIBDIR: removed
+	  + site-install: New target.
+	  + $(SKKSERV): include rsslibdir, rssarchdir in load path.
+
+	* bootstrap.sh, ext/depend: New.
+
+	* ext/extconf.rb: change directory guesssing strategy
+	
+	* skkserv.rb.in:
+	  + add rubylibdir and rubyarchdir to library path
+	  + Now load tcpwrap iff SKKServerConfig::TCPWRAP is not false.
+	
+	* rskkserv.conf.in (TCPWRAP): New config variable
+	
+2001-07-10  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv/ebdic.rb:
+	  + fix typo.
+	  + (EBDic#initialize): work with eb v3.
+	    Thank "UECHI Yasumasa" <uh@u.dhis.portside.net>
+	    for reporting.
+	  + (EBDic.create_search_agents):
+	    allow to specify the subbook with "SUBBOOK"
+	    as well as "SUBDIC".
+	  + (EPWAgent::NULLFormatter): New.
+	
+2001-02-27  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv/ebdic.rb (EBDic#search):
+	  + use search2/endsearch2 methods.
+	  + (KOUJIEN.format): delete midpoint char on candidate.
+
+	* test/ebdic-koujien.rb:
+	  add test case.
+
+2001-02-26  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv/ebdic.rb (KOUJIEN.format):
+	  pass at the added test case.
+	  
+	* test/ebdic-koujien.rb:
+	  add test case.
+
+2001-02-25  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* rskkserv: 2.94.10 release
+
+	* skkserv/ebdic.rb(EPWAgent):
+	  + (GAIJI): constant moved from KOUJIEN.
+	  + (gaiji_nasi?): new function.
+	  + (KOUJIEN.format, format_sub): to use gaiji_nasi?.
+	  + (MYPAEDIA.format, format_sub): check with gaiji_nasi?.
+
+	* test/ebdic-common.rb: added.
+
+	* test/ebdic*.rb:
+	  + to use test/ebdic-common.rb.
+	  + change class name EBDic*Test to TestEBDic*.
+
+2001-02-24  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv/ebdic.rb (KOUJIEN.format):
+	  pass at the added test case.
+
+	* test/ebdic-koujien.rb:
+	  + add test case.
+	  + (search, join): add new functions, and test cases use it.
+
+2001-02-18  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* rskkserv: 2.94.9 release
+
+	* skkserv.rb.in (SKKServer.remove_pid):
+	  fixed.
+	
+2001-02-17  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv.rb.in (peer_string):
+	  typo fixed.
+
+	* skkserv/ebdic.rb (KOUJIEN.format):
+	  pass at the added test case.
+
+	* test/ebdic-koujien.rb:
+	  modify test case.
+
+2001-02-04  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* rskkserv: 2.94.8 release
+
+	* skkserv.rb.in, rskkserv.conf.in
+	  + add flag to be daemon or not
+	  + add code to record pid
+
+	* configure.in:
+	  add `--with-piddir[=PIDDIR]'
+
+	* Makefile.in:
+	  + add code of handling piddir
+	  + skkserv.rb and rskkserv.conf depends on @CONFIG_STATUS@
+
+	* skkserv.rb.in, ext/lib/logger.rb:
+	  add verbose option.
+
+	* skkserv.rb.in, ext/lib/skkdic.rb:
+	  reduce the calling of Logger.log
+	
+	* skkserv/ebdic.rb (KOUJIEN.format):
+	  pass at the added test case.
+
+	* test/ebdic-koujien.rb:
+	  add test case.
+
+	* test/ebdic-*.rb:
+	  + put test_search_success* into test_search_success.
+	  + change char using with join from "," (or "/") to ";".
+	
+2001-01-27  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv.rb.in: BUFSIZ is renamed BUFSIZE,
+	  and change the value same as the orignal skkserv's value.
+
+2001-01-26  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* ext/skkdic.c, ext/lib/skkdic.rb:
+	  change interface of SKKDic.search, for improve search time
+
+2001-01-25  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* rskkserv: 2.94.0 release
+
+	* rskkserv.conf.in: added
+
+	* configure.in, Makefile.in: added
+
+	* Makefile:
+	  removed, and it's auto-generated from Makefile.in
+
+	* skkserv/, ext/lib/: skkserv/ is renamed ext/lib/
+
+	* ext/exconf.rb.in: added
+
+	* ext/extconf.rb:
+	  removed, and it's auto-generated from ext/extconf.rb.in
+
+2001-01-24  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* test/skkdic.rb, ext/skkdic.c, etc/extconf.rb: added.
+
+	* skkserv/skkdic.rb: require "skkserv/skkdic.so"
+
+2001-01-23  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv/ebdic.rb (MYPAEDIA.format): add extract pattern.
+
+2001-01-22  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv.rb.in: no exit when failed to open /dev/console.
+
+2001-01-21  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* rskkserv: 2.91.1 release
+
+	* test/ebdic.rb: fix incorrect assert condition.
+
+	* skkserv/ebdic.rb:
+	  + pass kana to formatter.
+	  + module MYPAEDIA:
+	    exclude candidate that all the same to kana.
+	
+	* skkserv/skkdic.rb:
+	  When failed to write cache file, not exit, but logging.
+
+	* skkserv.rb.in, skkserv/*dic.rb:
+	  replace printf debug with Logger.log.
+
+	* skkserv/logger.rb: added.
+
+2001-01-17  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* rskkserv: 2.90.1 release
+
+	* test/*.rb: refine test code.
+
+	* skkserv.rb.in, skkserv/*.rb: chomp the search string.
+	
+2000-12-25  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* Maintainer: YAMASHITA Junji.
+
+2000-12-23  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv/ebdic.rb: added.
+	  + KOUJIEN/MYPAEDIA/WDIC is supported.
+
+2000-12-22  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv/skkdic.rb: added.
+	* skkserv.rb:
+	  + class SKKDic move to skkserv/skkdic.rb,
+	  + some runtime options are deleted.
+	  + move @mutex to SKKDictionary#search from SKKDic#search.
+	* skkserv.rb, skkserv/*dic.rb:
+	  + search agents return the candidates as array.
+	* skkserv/skkdic.rb:
+	  + add 'KCODE' option.
+	* skkserv.rb:
+	  + remove --sjis option.
+	
+2000-12-21  YAMASHITA Junji (»³²¼ ½ã»Ê)  <ysjj@unixuser.org>
+
+	* skkserv.rb:
+	  + use configuration file.
+	    - add option "--config {config-filename}"
+	    - some constants of SKKServer move to confile.
+	  + old class SKKDictionary is renamed SKKDic.
+	  + class SKKDictionary is renewed.
+	  + sync stdout, if -d option.
+	  + fix typo.
+	* rskkserv.conf: added.
+

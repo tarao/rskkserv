@@ -1,0 +1,97 @@
+RUBY = @RUBY@ 
+RD2 = rd2
+RD2HTML = $(RD2) $(RD2OPT) $(RD2HTMLOPT)
+HTML2TXT = w3m -I e -dump -T text/html
+RD2TXT = ($(RD2HTML) | $(HTML2TXT))
+
+SKKSERV = skkserv.rb
+VERSION = @VERSION@
+CONFFILE = rskkserv.conf
+
+
+DESTDIR =
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+sbindir = @sbindir@
+sysconfdir = @sysconfdir@
+
+piddir = @piddir@
+logdir = @logdir@
+loglevel = @loglevel@
+dicfile = @dicfile@
+cachedir= @cachedir@
+
+rubylibdir = @rubylibdir@
+rubyarchdir = @rubyarchdir@
+
+INSTALL = @INSTALL@
+
+
+all: $(SKKSERV) $(CONFFILE) ext/Makefile README INSTALL
+	cd ext; make $@; cd ..
+
+$(SKKSERV): $(SKKSERV).in @CONFIG_STATUS@
+	$(RUBY) -p -e 'sub %r%@RUBY\@%, %q%$(RUBY)%' \
+		   -e 'sub %r%@VERSION\@%, %q%$(VERSION)%' \
+		   -e 'sub %r%@sysconfdir\@%, %q%$(sysconfdir)%' $< > $@
+	chmod 755 $@
+
+$(CONFFILE): $(CONFFILE).in @CONFIG_STATUS@
+	$(RUBY) -p -e 'sub %r%@loglevel\@%, %q%$(loglevel)%' \
+		   -e 'sub %r%@logdir\@%, %q%$(logdir)%' \
+		   -e 'sub %r%@piddir\@%, %q%$(piddir)%' \
+		   -e 'sub %r%@dicfile\@%, %q%$(dicfile)%' \
+		   -e 'sub %r%@cachedir\@%, %q%$(cachedir)%' $< > $@
+
+
+INSTALL: doc/INSTALL.rd
+	$(RD2TXT) <$< >$@
+
+README: doc/README.rd
+	$(RD2TXT) <$< >$@
+
+ext/extconf.rb: ext/extconf.rb.in @CONFIG_STATUS@
+	$(RUBY) -p -e 'gsub %r%@prefix\@, %q%$(prefix)%' \
+		   -e 'gsub %r%@rubylibdir\@, %q%$(rubylibdir)%' \
+		   -e 'gsub %r%@rubyarchdir\@%, %q%$(rubyarchdir)%' \
+		$< > $@
+
+ext/Makefile: ext/extconf.rb
+	cd ext; $(RUBY) extconf.rb
+
+distclean: clean
+	cd ext; make $@; cd ..
+	rm -f ext/extconf.rb ext/depend
+	rm -f config.* configure Makefile README INSTALL rskkserv.spec
+
+clean:
+	find ./ -name "*~" -exec rm {} \;
+	cd ext; make $@; cd ..
+	rm -f $(SKKSERV) $(CONFFILE)
+
+install: all installdirs
+	cd ext; make DESTDIR=$(DESTDIR) rss-install; cd ..
+	$(INSTALL) -m0755 $(SKKSERV) $(DESTDIR)$(sbindir)/$(SKKSERV)
+	$(INSTALL) -m0644 $(CONFFILE) $(DESTDIR)$(sysconfdir)/$(CONFFILE)
+
+installdirs:
+	mkdir -p $(DESTDIR)$(sbindir)
+	mkdir -p $(DESTDIR)$(sysconfdir)
+	mkdir -p $(DESTDIR)$(cachedir)
+
+
+uninstall:
+	rm -f $(DESTDIR)$(sbindir)/$(SKKSERV)
+	rm -rf $(DESTDIR)$(sysconfdir)
+	rm -rf $(DESTDIR)$(cachedir)
+
+test: $(SKKSERV) $(CONFFILE)
+	$(RUBY) -I. -rtest/unit test/skkdic.rb
+	$(RUBY) -I. -rtest/unit test/ebdic.rb
+	$(RUBY) -I. skkserv.rb --config test/rskkserv.conf &
+	sleep 1
+	$(RUBY) -I. -rtest/unit test/skkserv.rb
+	kill `cat test/var/rskkserv.pid`
+
+.PHONY: clean install installdirs uninstall test

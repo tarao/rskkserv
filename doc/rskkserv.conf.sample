@@ -1,0 +1,38 @@
+# rskkserv.conf.sample --- rskkserv configuration sample file
+
+#host = localhost
+port = 1178
+max_clients = 32
+
+daemon = true
+tcpwrap = true
+pid_FILE = "/var/run/rskkserv.pid"
+
+# nolog, emerg, alert, crit, err, warning, notice, info, debug
+log_level = debug
+log_file = "/var/log/rskkserv.log"
+
+skk no cache = false
+skk cache dir = "/var/cache/rskkserv"
+
+dic = skk:/usr/share/skk/SKK-JISYO.L
+dic = skk:/usr/share/skk/SKK-JISYO.JIS2
+#dic = skk:/usr/share/skk/SKK-JISYO.JIS3_4
+dic = skk:/usr/share/skk/SKK-JISYO.pubdic+
+dic = skk:/usr/share/skk/SKK-JISYO.zipcode
+dic = skk:/usr/share/skk/SKK-JISYO.office.zipcode
+
+# need libeb and libeb-ruby
+# * libeb     : <URL:http://www.sra.co.jp/people/m-kasahr/eb/>
+# * libeb-ruby: <URL:http://www.threeweb.ad.jp/~nyasu/software/ruby.html#rubyeb>
+dic = eb:/opt/epwing/koujien
+    module = KOUJIEN
+    subbook = koujien
+dic = eb:/opt/epwing/mypaedia
+    module = MYPAEDIA
+    subbook = mypaedia
+dic = eb:/opt/epwing/wdic
+    module = WDIC
+    subbook = wdic
+
+# rskkserv.conf.sample ends here

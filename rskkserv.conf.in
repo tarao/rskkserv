@@ -1,0 +1,18 @@
+# rskkserv.conf --- rskkserv configuration file
+
+port = 1178
+max_clients = 32
+
+daemon = true
+tcpwrap = true
+pid_file = @piddir@/rskkserv.pid
+
+log_level = @loglevel@
+log_file = @logdir@/rskkserv.log
+
+skk no cache = false
+skk cache dir = @cachedir@
+
+dic = skk:@dicfile@
+
+# rskkserv.conf ends here

@@ -1,0 +1,37 @@
+#!/bin/sh
+
+SKKSERV=/usr/sbin/rskkserv
+
+test -x $SKKSERV || exit 0
+
+case "$1" in
+start)
+	echo -n "Starting SKK dictionary server: "
+	if $SKKSERV; then
+		echo "rskkserv."
+	fi
+	;;
+stop)
+	echo -n "Stopping SKK dictionary server: "
+	if pkill -u0 rskkserv; then
+		pkill -KILL -u0 rskkserv
+		echo "rskkserv."
+	else
+		echo "no rskkserv found running; none killed."
+	fi
+	;;
+force-reload|restart)
+	echo -n "Restarting SKK dictionary server: "
+	pkill -u0 rskkserv
+	pkill -KILL -u0 rskkserv
+	if $SKKSERV; then
+		echo "rskkserv."
+	fi
+	;;
+*)
+	echo "Usage: /etc/init.d/rskkserv {start|stop|restart|force-reload}" >&2
+	exit 1
+	;;
+esac
+
+exit 0

@@ -1,0 +1,92 @@
+dnl skkserv.rb configure.in
+dnl to generate configure, try to type autoconf.
+
+AC_INIT(skkserv.rb.in)
+
+VERSION=2.95.1
+AC_SUBST(VERSION)
+
+AC_PROG_INSTALL
+
+dnl check ruby
+AC_ARG_WITH(RUBY,
+	[ --with-ruby=FILE ruby executable binary [guessed]],
+	[RUBY="$withval"], [RUBY="guessed"])
+AC_SUBST(RUBY)
+
+if test "x${RUBY}" = "xguessed"; then
+  AC_PATH_PROG(RUBY,ruby,failure,)
+  if test "x$RUBY" = "xfailure"; then
+    AC_MSG_ERROR(ruby not found.)
+  fi
+  AC_MSG_RESULT(${RUBY})
+fi
+
+
+dnl check the ruby library
+AC_ARG_WITH(rubylibdir,
+	[ --with-rubylibdir=DIR rb library directry [guessed]],
+	[rubylibdir="$withval"], [rubylibdir="guessed"])
+AC_DEFINE_UNQUOTED(rubylibdir, $rubylibdir)
+AC_SUBST(rubylibdir)
+dnl AC_MSG_RESULT($rubylibdir)
+
+AC_ARG_WITH(rubyarchdir,
+	[ --with-rubyarchdir=DIR so library directry [guessed]],
+	[rubyarchdir="$withval"], [rubyarchdir="guessed"])
+AC_DEFINE_UNQUOTED(rubyarchdir, $rubyarchdir)
+AC_SUBST(rubyarchdir)
+dnl AC_MSG_RESULT($rubyarchdir)
+
+
+dnl AC_MSG_CHECKING(skkserv dic file)
+AC_ARG_WITH(dicfile,
+	[ --with-dicfile=FILE the dictionary file of skkserv [\${datadir}/skk/SKK-JISYO.L]],
+	[dicfile="$withval"], [dicfile="${datadir}/skk/SKK-JISYO.L"])
+AC_DEFINE_UNQUOTED(dicfile, $dicfile)
+AC_SUBST(dicfile)
+dnl AC_MSG_RESULT($dicfile)
+
+
+dnl AC_MSG_CHECKING(skkserv dic cache direcotry)
+AC_ARG_WITH(cachedir,
+	[ --with-cachedir=DIR the cache directry of skkserv [\${localstatedir}/cache/rskkserv]],
+	[cachedir="$withval"], [cachedir="${localstatedir}/cache/rskkserv"])
+AC_DEFINE_UNQUOTED(cachedir, $cachedir)
+AC_SUBST(cachedir)
+dnl AC_MSG_RESULT($cachedir)
+
+
+dnl AC_MSG_CHECKING(skkserv pid directory)
+AC_ARG_WITH(piddir,
+	[ --with-piddir=DIR the pid file of skkserv [\${localstatedir}/pid]],
+	[piddir="$withval"], [piddir="${localstatedir}/run"])
+AC_DEFINE_UNQUOTED(piddir, $piddir)
+AC_SUBST(piddir)
+dnl AC_MSG_RESULT($piddir)
+
+
+dnl AC_MSG_CHECKING(skkserv log directory)
+AC_ARG_WITH(logdir,
+	[ --with-logdir=DIR the log file of skkserv [\${localstatedir}/log]],
+	[logdir="$withval"], [logdir="${localstatedir}/log"])
+AC_DEFINE_UNQUOTED(logdir, $logdir)
+AC_SUBST(logdir)
+dnl AC_MSG_RESULT($logdir)
+
+
+dnl AC_MSG_CHECKING(skkserv log level)
+AC_ARG_WITH(loglevel,
+	[ --with-loglevel=LEVEL the log file of skkserv [nolog]],
+	[loglevel="$withval"], [loglevel="nolog"])
+AC_DEFINE_UNQUOTED(loglevel, $loglevel)
+AC_SUBST(loglevel)
+dnl AC_MSG_RESULT($loglevel)
+
+AC_SUBST(CONFIG_STATUS)
+
+AC_OUTPUT([
+Makefile
+rskkserv.spec
+ext/extconf.rb
+])

@@ -1,0 +1,70 @@
+rskkserv (2.95.1-1) unstable; urgency=high
+
+  * new upstream release.
+  * wrong install directory, thus urgency=high.
+  * debian/rules: Install skkserv.rb as rskkserv.
+  * debian/init:
+    + Correct the pkill usage.
+    + s/skkserv.rb/rskkserv/
+	
+ -- YAMASHITA Junji <ysjj@unixuser.org>  Sat, 15 Nov 2003 02:50:56 +0900
+
+rskkserv (2.94.13-1) unstable; urgency=low
+
+  * repack with ruby1.8
+
+ -- YAMASHITA Junji <ysjj@unixuser.org>  Wed, 24 Sep 2003 23:06:18 +0900
+
+rskkserv (2.94.12-3) unstable; urgency=low
+
+  * NM release.
+  * init, preinst: use pkill instead of killall.
+
+ -- YAMASHITA Junji <ysjj@unixuser.org>  Wed, 15 Aug 2001 00:57:34 +0900
+
+rskkserv (2.94.12-2) unstable; urgency=low
+
+  * NM release.
+  * New upstream release, really.
+  * control:
+    + Changed Architecture all to any.
+    + Add Recommends: libwrap-ruby
+    + Add Suggests: skkdic-extra, libeb-ruby
+    + Standards-Version is 3.5.2
+    + Added libc6-dev and ruby-dev to Build-Depends.
+  
+ -- YAMASHITA Junji <ysjj@unixuser.org>  Tue, 14 Aug 2001 23:25:06 +0900
+
+rskkserv (2.94.12-1) unstable; urgency=low
+
+  * NM release.
+  * New upstream release.
+
+ -- YAMASHITA Junji <ysjj@unixuser.org>  Mon, 13 Aug 2001 19:48:00 +0900
+
+rskkserv (2.0-4) unstable; urgency=low
+
+  * control: Depends ruby instead of ruby1.2 | ruby1.3.
+
+ -- Shugo Maeda <shugo@netlab.co.jp>  Wed, 25 Aug 1999 12:09:29 +0900
+
+rskkserv (2.0-3) unstable; urgency=low
+
+  * control: Depends ruby1.2 | ruby1.3 instead of ruby.
+
+ -- Shugo Maeda <shugo@netlab.co.jp>  Mon, 15 Feb 1999 18:04:40 +0900
+
+rskkserv (2.0-2) unstable; urgency=low
+
+  * init: Implemented force-reload and restart.
+  * control: Changed Architecture any to all.
+  * Removed README.debian.
+  * Removed postinst and postrm.
+
+ -- Shugo Maeda <shugo@netlab.co.jp>  Fri, 29 Jan 1999 22:01:07 +0900
+
+rskkserv (2.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Shugo Maeda <shugo@netlab.co.jp>  Fri, 29 Jan 1999 03:34:06 +0900
