@@ -52,8 +52,8 @@ README: doc/README.rd
 	$(RD2TXT) <$< >$@
 
 ext/extconf.rb: ext/extconf.rb.in @CONFIG_STATUS@
-	$(RUBY) -p -e 'gsub %r%@prefix\@, %q%$(prefix)%' \
-		   -e 'gsub %r%@rubylibdir\@, %q%$(rubylibdir)%' \
+	$(RUBY) -p -e 'gsub %r%@prefix\@%, %q%$(prefix)%' \
+		   -e 'gsub %r%@rubylibdir\@%, %q%$(rubylibdir)%' \
 		   -e 'gsub %r%@rubyarchdir\@%, %q%$(rubyarchdir)%' \
 		$< > $@
 

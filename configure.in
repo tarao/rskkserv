@@ -89,4 +89,6 @@ AC_OUTPUT([
 Makefile
 rskkserv.spec
 ext/extconf.rb
+doc/rskkserv.1
+doc/rskkserv.1.ja_JP.eucJP
 ])

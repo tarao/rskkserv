@@ -1,3 +1,10 @@
+rskkserv (2.95.1.20040208-1) unstable; urgency=medium
+
+  * New upstream snapshot
+  * Bump Standards-Version to 3.6.1
+
+ -- YAMASHITA Junji <ysjj@unixuser.org>  Sun, 08 Feb 2004 20:48:15 +0900
+
 rskkserv (2.95.1-2) unstable; urgency=medium
 
   * debian/init: use start-stop-daemon instead of pkill.

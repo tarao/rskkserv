@@ -2,8 +2,8 @@ Source: rskkserv
 Section: utils
 Priority: optional
 Maintainer: Shugo Maeda <shugo@netlab.co.jp>
-Build-Depends: debhelper (>> 3.0.0), libc6-dev, ruby1.8, ruby1.8-dev, libeb7-dev
-Standards-Version: 3.5.2
+Build-Depends: debhelper (>> 4.0.0), libc6-dev, ruby1.8, ruby1.8-dev, libeb7-dev
+Standards-Version: 3.6.1
 
 Package: rskkserv
 Architecture: any

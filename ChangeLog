@@ -1,8 +1,21 @@
+2004-11-02  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* Makefile.in:
+	(ext/extconf.rb target) Fix missing '%' chars.
+	* configure.in:
+	(AC_OUTPUT) Add doc/rskkserv.1 and doc/rskkserv.1.ja_JP.eucJP
+	* doc/rskksev.1.ja_JP.eucJP:
+	Oops, change file encoding iso-2022-jp to euc-jp.
+
+	Thanks KURASHINA.
+
 2004-02-08  YAMASHITA Junji  <ysjj@unixuser.org>
 
 	* skkserv.rb.in:
 	Simplify the code of pid file. Now one pid is in the file.
 	Lazy load the dictionary agent libraries.
+	Catch more exception while writing pid.
+	Change the timing of deleting pid file.
 
 2003-11-22  YAMASHITA Junji  <ysjj@unixuser.org>
 

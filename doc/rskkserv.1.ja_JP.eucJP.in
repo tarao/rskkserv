@@ -4,70 +4,70 @@
 .\" This manual page may be freely distributed and modified. 
 .\"
 .TH RSKKSERV "1" "February 2002" "rskkserv @VERSION@"
-.SH $BL>A0(B
-rskkserv \- Ruby $B$G<BAu$5$l$?(B SKK $BMQ<-=q%5!<%P(B
-.SH $B=q<0(B
+.SH Ì¾Á°
+rskkserv \- Ruby ¤Ç¼ÂÁõ¤µ¤ì¤¿ SKK ÍÑ¼­½ñ¥µ¡¼¥Ð
+.SH ½ñ¼°
 .B rskkserv
 [\fIOPTION\fR] [\fIskk-dictionary-file\fR]
-.SH $B@bL@(B
+.SH ÀâÌÀ
 .TP
 \fB\-d\fR, \fB\-\-debug\fR
-$B%G%P%C%0%b!<%I(B
+¥Ç¥Ð¥Ã¥°¥â¡¼¥É
 .TP
 \fB\-p\fR\fIport\fR
-$B;XDj%]!<%H$rMxMQ$7$F%5!<%P$r5/F0(B
+»ØÄê¥Ý¡¼¥È¤òÍøÍÑ¤·¤Æ¥µ¡¼¥Ð¤òµ¯Æ°
 .TP
 \fB\-\-config\fR \fICONFIGFILE\fR
-$B@_Dj%U%!%$%k$r;XDj(B
+ÀßÄê¥Õ¥¡¥¤¥ë¤ò»ØÄê
 .TP
 \fB\-h\fR, \fB\-\-help\fR
-$B%X%k%W$rI=<($7$F=*N;(B
+¥Ø¥ë¥×¤òÉ½¼¨¤·¤Æ½ªÎ»
 .TP
 \fB\-v\fR
-$B>iD9%b!<%I(B
+¾éÄ¹¥â¡¼¥É
 \fB\-V\fR, \fB\-\-version\fR
-$B%P!<%8%g%s>pJs$rI=<($7$F=*N;(B
+¥Ð¡¼¥¸¥ç¥ó¾ðÊó¤òÉ½¼¨¤·¤Æ½ªÎ»
 .TP
-rskkserv $B$O9-$/CN$i$l$F$$$kF|K\8l$N2>L>4A;zJQ49%W%m%0%i%`$N0l$D$G$"$k!"(B
-SKK (= Simple Kana-to-Kanji conversion program) $B$N$?$a$K!"<-=q$r4IM}$9$k(B
-$B%W%m%0%i%`$G$9!#(B
+rskkserv ¤Ï¹­¤¯ÃÎ¤é¤ì¤Æ¤¤¤ëÆüËÜ¸ì¤Î²¾Ì¾´Á»úÊÑ´¹¥×¥í¥°¥é¥à¤Î°ì¤Ä¤Ç¤¢¤ë¡¢
+SKK (= Simple Kana-to-Kanji conversion program) ¤Î¤¿¤á¤Ë¡¢¼­½ñ¤ò´ÉÍý¤¹¤ë
+¥×¥í¥°¥é¥à¤Ç¤¹¡£
 .PP
-SKK $B$N<-=q%5!<%P%W%m%0%i%`$OB>$K$b$$$/$D$+$"$j$^$9$,!"$=$l$i$HHf3S$9$k$H(B
-rskkserv $B$K$O$$$/$D$+$ND9=j(B($BMM!9$J7A<0$N<-=q$N%5%]!<%H$d(B ruby $B$G=q$+$l$F$$$k(B
-$B$N$G3HD%@-$KM%$l$k$J$I(B)$B$r;}$C$F$$$^$9!#(B
+SKK ¤Î¼­½ñ¥µ¡¼¥Ð¥×¥í¥°¥é¥à¤ÏÂ¾¤Ë¤â¤¤¤¯¤Ä¤«¤¢¤ê¤Þ¤¹¤¬¡¢¤½¤ì¤é¤ÈÈæ³Ó¤¹¤ë¤È
+rskkserv ¤Ë¤Ï¤¤¤¯¤Ä¤«¤ÎÄ¹½ê(ÍÍ¡¹¤Ê·Á¼°¤Î¼­½ñ¤Î¥µ¥Ý¡¼¥È¤ä ruby ¤Ç½ñ¤«¤ì¤Æ¤¤¤ë
+¤Î¤Ç³ÈÄ¥À­¤ËÍ¥¤ì¤ë¤Ê¤É)¤ò»ý¤Ã¤Æ¤¤¤Þ¤¹¡£
 .TP
 .I [skk-dictionaries]
-$BMxMQ$9$k<-=q$r;XDj$7$^$9!#(Brskkserv $B$OI8=`E*$J7A<0$N<-=q(B($B$3$l$i$O(B
-SKK OpenLab.: http://openlab.ring.gr.jp/skk/ $B$+$iF~<j2DG=$G$9(B)$B$@$1$G$J$/!"(B
-EBdic $B7A<0$N<-=q$b%5%]!<%H$7$F$$$^$9(B ($B$?$@$7!"(Blibeb:
-http://www.sra.co.jp/people/m-kasahr/eb/ $B$H(B libeb-ruby:
-http://www.threeweb.ad.jp/~nyasu/software/ruby.html#rubyeb $B$,I,MW$H$J$j$^$9(B)$B!#(B
+ÍøÍÑ¤¹¤ë¼­½ñ¤ò»ØÄê¤·¤Þ¤¹¡£rskkserv ¤ÏÉ¸½àÅª¤Ê·Á¼°¤Î¼­½ñ(¤³¤ì¤é¤Ï
+SKK OpenLab.: http://openlab.ring.gr.jp/skk/ ¤«¤éÆþ¼ê²ÄÇ½¤Ç¤¹)¤À¤±¤Ç¤Ê¤¯¡¢
+EBdic ·Á¼°¤Î¼­½ñ¤â¥µ¥Ý¡¼¥È¤·¤Æ¤¤¤Þ¤¹ (¤¿¤À¤·¡¢libeb:
+http://www.sra.co.jp/people/m-kasahr/eb/ ¤È libeb-ruby:
+http://www.threeweb.ad.jp/~nyasu/software/ruby.html#rubyeb ¤¬É¬Í×¤È¤Ê¤ê¤Þ¤¹)¡£
 .I [CONFFILE]
-$B$O(B rskkserv $B$N@_Dj%U%!%$%k$r;XDj$7$^$9!#%7%9%F%`@_Dj%U%!%$%k$OMxMQ$9$k(B
-$B<-=q$N%Q%9$r;XDj$7$^$9$,!"DL>o$O(B /etc/rskkserv.conf $B$H$7$F%$%s%9%H!<%k(B
-$B$5$l!"$3$N%7%9%F%`I8=`$N@_Dj$rMxMQ$9$k$N$G$"$l$P$3$N%*%W%7%g%s$r;XDj$9$k(B
-$BI,MW$O$"$j$^$;$s!#(B
+¤Ï rskkserv ¤ÎÀßÄê¥Õ¥¡¥¤¥ë¤ò»ØÄê¤·¤Þ¤¹¡£¥·¥¹¥Æ¥àÀßÄê¥Õ¥¡¥¤¥ë¤ÏÍøÍÑ¤¹¤ë
+¼­½ñ¤Î¥Ñ¥¹¤ò»ØÄê¤·¤Þ¤¹¤¬¡¢ÄÌ¾ï¤Ï /etc/rskkserv.conf ¤È¤·¤Æ¥¤¥ó¥¹¥È¡¼¥ë
+¤µ¤ì¡¢¤³¤Î¥·¥¹¥Æ¥àÉ¸½à¤ÎÀßÄê¤òÍøÍÑ¤¹¤ë¤Î¤Ç¤¢¤ì¤Ð¤³¤Î¥ª¥×¥·¥ç¥ó¤ò»ØÄê¤¹¤ë
+É¬Í×¤Ï¤¢¤ê¤Þ¤»¤ó¡£
 .PP
-$B$b$7(B \fIskk-dictionaries\fR $B%Q%i%a!<%?$,M?$($i$l$F$$$J$$>l9g!"%W%m%0%i%`$O(B
-$B<-=q$NCV$$$F$"$k%G%#%l%/%H%j$r%7%9%F%`@_Dj%U%!%$%k$+$i7hDj$7$h$&$H$7$^$9!#(B
+¤â¤· \fIskk-dictionaries\fR ¥Ñ¥é¥á¡¼¥¿¤¬Í¿¤¨¤é¤ì¤Æ¤¤¤Ê¤¤¾ì¹ç¡¢¥×¥í¥°¥é¥à¤Ï
+¼­½ñ¤ÎÃÖ¤¤¤Æ¤¢¤ë¥Ç¥£¥ì¥¯¥È¥ê¤ò¥·¥¹¥Æ¥àÀßÄê¥Õ¥¡¥¤¥ë¤«¤é·èÄê¤·¤è¤¦¤È¤·¤Þ¤¹¡£
 .PP
-\fB\-d\fR $B%*%W%7%g%s$r;XDj$7$F%W%m%0%i%`$r%G%P%C%0%b!<%I$GF0:n$5$;$k$H!"(B
-$B%G%P%C%0$N$?$a$N$h$j>iD9$J>pJs$rI=<($5$l$^$9!#(B
-.SH $BCx<T(B
-$B:4F#(B $B6G(B
-.SH $B%P%0(B
-$B%P%0Js9p$O(B YAMASHITA Junji <ysjj@unixuser.org> $B$^$G$I$&$>!#(B
-.SH $BCx:n8"(B
+\fB\-d\fR ¥ª¥×¥·¥ç¥ó¤ò»ØÄê¤·¤Æ¥×¥í¥°¥é¥à¤ò¥Ç¥Ð¥Ã¥°¥â¡¼¥É¤ÇÆ°ºî¤µ¤»¤ë¤È¡¢
+¥Ç¥Ð¥Ã¥°¤Î¤¿¤á¤Î¤è¤ê¾éÄ¹¤Ê¾ðÊó¤òÉ½¼¨¤µ¤ì¤Þ¤¹¡£
+.SH Ãø¼Ô
+º´Æ£ ¶Ç
+.SH ¥Ð¥°
+¥Ð¥°Êó¹ð¤Ï YAMASHITA Junji <ysjj@unixuser.org> ¤Þ¤Ç¤É¤¦¤¾¡£
+.SH Ãøºî¸¢
 Copyright \(co 2002 SATOH Satoru <ss@gnome.gr.jp>
 .br
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-.SH $B4XO"%U%!%$%k!"%3%^%s%I(B
+.SH ´ØÏ¢¥Õ¥¡¥¤¥ë¡¢¥³¥Þ¥ó¥É
 \fBskkinput\fR(1), \fBhosts_access\fR(5)
-.SH $B:n<T(B
-rskkserv $B$O(B YAMASHITA Junji <ysjj@unixuser.org> $B$,3+H/!&J]<i$7$F$$$^$9!#(B
-$B:G?7%P!<%8%g%s$O(B
+.SH ºî¼Ô
+rskkserv ¤Ï YAMASHITA Junji <ysjj@unixuser.org> ¤¬³«È¯¡¦ÊÝ¼é¤·¤Æ¤¤¤Þ¤¹¡£
+ºÇ¿·¥Ð¡¼¥¸¥ç¥ó¤Ï
 http://www.ruby-lang.org/en/raa-update.rhtml?name=rskkserv
-$B$+$iF~<j2DG=$G$9!#(B
+¤«¤éÆþ¼ê²ÄÇ½¤Ç¤¹¡£
 .LP
-$B$3$N%^%K%e%"%k%Z!<%8$O:4F#(B $B6G(B <ss@gnome.gr.jp> $B$,=q$-$^$7$?!#(B
+¤³¤Î¥Þ¥Ë¥å¥¢¥ë¥Ú¡¼¥¸¤Ïº´Æ£ ¶Ç <ss@gnome.gr.jp> ¤¬½ñ¤­¤Þ¤·¤¿¡£
