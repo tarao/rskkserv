@@ -2,14 +2,14 @@ Source: rskkserv
 Section: utils
 Priority: optional
 Maintainer: Shugo Maeda <shugo@netlab.co.jp>
-Build-Depends: debhelper (>> 4.0.0), libc6-dev, ruby1.8, ruby1.8-dev, libeb7-dev
+Build-Depends: debhelper (>> 4.0.0), libc6-dev, ruby1.8, ruby1.8-dev
 Standards-Version: 3.6.1
 
 Package: rskkserv
 Architecture: any
 Depends: ruby, skkdic, ${shlibs:Depends}
-Recommends: libwrap-ruby
-Suggests: skkdic-extra, libeb-ruby
+Recommends: libwrap-ruby1.8
+Suggests: skkdic-extra, libeb-ruby1.8
 Provides: skkserv
 Conflicts: skkserv
 Replaces: skkserv

@@ -13,7 +13,7 @@ pkgname=rskkserv-`sed -ne 's/^VERSION=//p' configure.in`
 cd ..
 
 if [ "`basename $pwd`" == "rskkserv-cvs" -a ! -e $pkgname ]; then
-    cp -r rskkserv-cvs $pkgname
+    cp -pr rskkserv-cvs $pkgname
     find $pkgname \( -name CVS -type d \) -o -name .cvsignore |
 	xargs rm -rf
 fi

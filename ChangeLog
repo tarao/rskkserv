@@ -1,3 +1,10 @@
+2004-11-10  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* configure.in:
+	  + VERSION=2.95.3
+	* skkserv.rb.in:
+	Rescue the expections of tcpwrappers while acceptings.
+
 2004-11-08  YAMASHITA Junji  <ysjj@unixuser.org>
 
 	* doc/rskkserv.conf.sample:
