@@ -89,7 +89,7 @@ uninstall:
 	rm -rf $(DESTDIR)$(cachedir)
 
 TEST_RUBY = $(RUBY) -I.
-TEST_RUBY_OPTIONS = -Ke -rtest/unit
+TEST_RUBY_OPTIONS = -Ke
 
 test: $(SKKSERV) $(CONFFILE)
 	@[ -e skkserv ] || ln -s ext/lib skkserv
