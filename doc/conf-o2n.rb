@@ -41,7 +41,7 @@ EOH
 
     def global
       ["HOST", "PORT", "MAX_CLIENTS", "DAEMON", "TCPWRAP",
-       "PIDFILE", "LOG_FILE"].each do |var|
+       "PID_FILE", "LOG_FILE"].each do |var|
         set_if_def(SKKServerConfig, var, var.downcase)
       end
 

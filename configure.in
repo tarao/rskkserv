@@ -3,7 +3,7 @@ dnl to generate configure, try to type autoconf.
 
 AC_INIT(skkserv.rb.in)
 
-VERSION=2.95.2
+VERSION=2.95.2-cvs
 AC_SUBST(VERSION)
 
 AC_PROG_INSTALL

@@ -6,7 +6,7 @@ max_clients = 32
 
 daemon = true
 tcpwrap = true
-pid_FILE = "/var/run/rskkserv.pid"
+pid_file = "/var/run/rskkserv.pid"
 
 # nolog, emerg, alert, crit, err, warning, notice, info, debug
 log_level = debug
