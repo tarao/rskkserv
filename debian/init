@@ -10,23 +10,32 @@ CONF=/etc/rskkserv.conf
 PIDFILE="`sed -ne 's/^[ 	]*pid[_ 	]*file[ 	]*=[ 	]*//p' $CONF`"
 PIDFILE=${PIDFILE:-/var/run/rskkserv.pid}
 
+start() {
+	start-stop-daemon --start --exec $DAEMON
+}
+
+stop() {
+	start-stop-daemon --stop "$@" --pidfile $PIDFILE --name $NAME
+}
+
 case "$1" in
 start)
-	echo -n "Starting $DESC: $NAME"
-	start-stop-daemon --start --oknodo --exec $DAEMON
-	echo "."
+	echo -n "Starting $DESC: "
+	if start; then
+		echo "$NAME."
+	fi
 	;;
 stop)
-	echo -n "Stopping $DESC: $NAME"
-	start-stop-daemon --stop --oknodo --pidfile $PIDFILE --name $NAME
-	echo "."
+	echo -n "Stopping $DESC: "
+	if stop; then
+		echo "$NAME."
+	fi
 	;;
 force-reload|restart)
-	echo -n "Restarting $DESC: $NAME"
-	start-stop-daemon --stop --oknodo --pidfile $PIDFILE --name $NAME
-	sleep 1
-	start-stop-daemon --start --oknodo --exec $DAEMON
-	echo "."
+	echo -n "Restarting $DESC: "
+	if stop --quiet && sleep 1; start; then
+		echo "$NAME."
+	fi
 	;;
 *)
 	echo "Usage: /etc/init.d/$NAME {start|stop|restart|force-reload}"
