@@ -1,3 +1,9 @@
+rskkserv (2.95.2.20041104-1) unstable; urgency=low
+
+  * New upstream snapshot
+
+ -- YAMASHITA Junji <ysjj@unixuser.org>  Thu, 04 Nov 2004 12:27:58 +0900
+
 rskkserv (2.95.1.20040208-1) unstable; urgency=medium
 
   * New upstream snapshot

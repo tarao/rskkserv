@@ -1,5 +1,14 @@
 2004-11-04  YAMASHITA Junji  <ysjj@unixuser.org>
 
+	* doc/rskkserv.conf.sample:
+	s/pid_FILE/pid_file/
+	* doc/conf-o2n.rb:
+	s/PIDFILE/PID_FILE/
+	
+	Thanks to KURASHINA.
+
+2004-11-04  YAMASHITA Junji  <ysjj@unixuser.org>
+
 	* configure.in:
 	  + VERSION=2.95.2
 	* skkserv/ebdic.rb:
