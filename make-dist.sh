@@ -1,5 +1,5 @@
 #!/bin/sh
-# make source distribution
+# make-dist.sh -- make source distribution
 
 [ -z "$AUTOCONF" ] && AUTOCONF="autoconf"
 
@@ -8,18 +8,15 @@
 $AUTOCONF
 rm -rf autom4te.cache
 
-RD2HTML="${RD2:-rd2} ${RD2OPT} ${RD2HTMLOPT}"
-HTML2TXT="${HTML2TXT:-w3m -I e -dump -T text/html}"
-
-for rd in doc/INSTALL.rd doc/README.rd
-do
-    txt="`basename $rd .rd`"
-    rm -f $txt
-    $RD2HTML $rd | $HTML2TXT >$txt
-done
-
-PWD=${PWD:-`pwd`}
-pkgname="`basename $PWD`"
+pwd=${PWD:-`pwd`}
+pkgname=rskkserv-`sed -ne 's/^VERSION=//p' configure.in`
 cd ..
-tar cf - $pkgname | gzip -9 >${pkgname}.tar.gz
-cd $pkgname
+
+if [ "`basename $pwd`" == "rskkserv-cvs" -a ! -e $pkgname ]; then
+    cp -r rskkserv-cvs $pkgname
+    find $pkgname \( -name CVS -type d \) -o -name .cvsignore |
+	xargs rm -rf
+fi
+tar czf ${pkgname}.tar.gz $pkgname
+
+cd $pwd

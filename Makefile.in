@@ -64,6 +64,7 @@ distclean: clean
 	cd ext; make $@; cd ..
 	rm -f ext/extconf.rb ext/depend
 	rm -f config.* configure Makefile README INSTALL rskkserv.spec
+	rm -rf test/conf test/var
 
 clean:
 	find ./ -name "*~" -exec rm {} \;
@@ -87,8 +88,11 @@ uninstall:
 	rm -rf $(DESTDIR)$(cachedir)
 
 test: $(SKKSERV) $(CONFFILE)
+	[ -e skkserv ] || ln -s ext/lib skkserv
 	$(RUBY) -I. -rtest/unit test/skkdic.rb
 	$(RUBY) -I. -rtest/unit test/ebdic.rb
+	[ -e test/conf ] || mkdir test/conf
+	[ -e test/var ] || mkdir test/var
 	$(RUBY) -I. skkserv.rb --config test/rskkserv.conf &
 	sleep 1
 	$(RUBY) -I. -rtest/unit test/skkserv.rb
