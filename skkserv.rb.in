@@ -118,20 +118,17 @@ USAGE
     begin
       f = open(filename, "w")
       f.printf("%d\n", $$)
-    rescue Errno::EACCES
-      $stderr.printf("failed to write pid(%d)\n", $$);
+    rescue
+      $stderr.printf("failed to write pid(%d): %s\n", $$, $!);
       return
     ensure
-      f.close
+      f.close if f
     end
 
-    signal_handler = Proc.new {
+    at_exit {
 	File.unlink(@config.pid_file) if File.exists?(@config.pid_file)
-	exit 0
     }
-    for signal in ["INT", "TERM"]
-      trap(signal, &signal_handler)
-    end
+    trap("TERM", proc { exit 0 })
   end
 
   def initialize(dic, config)
