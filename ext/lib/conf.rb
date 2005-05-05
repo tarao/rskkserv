@@ -82,9 +82,9 @@ class Conf
   end
 
   def str2bool(val)
-    if (val =~ /^(on|true)$/i)
+    if (val =~ /^(on|true|yes)$/i)
       return true
-    elsif (val =~ /^(off|false)$/i)
+    elsif (val =~ /^(off|false|no)$/i)
       return false
     end
     raise "boolean value required"

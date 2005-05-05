@@ -1,3 +1,21 @@
+2005-05-05  YAMASHITA Junji  <ysjj@unixuser.org>
+	* configure.in:
+	VERSION=2.95.3.50-cvs
+	* skkserv.rb.in:
+	(SKKServer.write_pid)
+	trap SIGINT and SIGTERM with "EXIT".
+	(SKKServer#accept_clients)
+	Rescue just StandardError, not Exception(SignalException).
+	* ext/lib/conf.rb(Conf#str2bool):
+	Add yes/no of boolean expression.
+	* ext/lib/skkdic.rb:
+	Separate pure ruby searching procedure (search_rb) from search,
+	and introduce proc object (@search) for dispatching SKKDic.search
+	and/or SKKDic#search_rb.
+	* ext/skkdic.c:
+	Reduce USE_MMAP conditional part.
+
+
 2004-11-10  YAMASHITA Junji  <ysjj@unixuser.org>
 
 	* configure.in:

@@ -128,7 +128,9 @@ USAGE
     at_exit {
 	File.unlink(@config.pid_file) if File.exists?(@config.pid_file)
     }
-    trap("TERM", proc { exit 0 })
+    for sig in [:INT, :TERM]
+      trap(sig, "EXIT")
+    end
   end
 
   def initialize(dic, config)
@@ -222,7 +224,7 @@ USAGE
     loop do
       begin
 	s = @server.accept
-      rescue Exception
+      rescue
 	Logger::log(Logger::WARNING, "%s", $!)
 	next
       end

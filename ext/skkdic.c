@@ -1,9 +1,9 @@
-/** skkserv/skkdic.c --- rskkserv module for skkdic.
+/** ext/skkdic.c --- rskkserv module for skkdic.
 
- * Copyright (C) 2001  YAMASHITA Junji
+ * Copyright (C) 2001-2005 YAMASHITA Junji
 
  * Author:	YAMASHITA Junji <ysjj@unixuser.org>
- * Version:	0.9
+ * Version:	0.10
 
  * This file is part of rskkserv.
 
@@ -30,29 +30,56 @@
 #else
 #include <stdio.h>
 #endif /* USE_MMAP */
+
 #if PROFILING
 #include <sys/time.h>
 #include <unistd.h>
 #endif /* PROFILING */
+
 #include <string.h>
 #include <ruby.h>
 
 #if USE_MMAP
 typedef char *JISYO;
-#else
+typedef char *JISYO_BUF;
+
+#define jisyo_open(d,p) \
+  do {\
+    struct stat jisyo_stat;\
+    (d)->jisyo_fd = open(p, O_RDONLY);\
+    fstat((d)->jisyo_fd, &jisyo_stat);\
+    (d)->jisyo_len = jisyo_stat.st_size;\
+    (d)->jisyo = (char*)mmap(0, (d)->jisyo_len, PROT_READ, MAP_PRIVATE, (d)->jisyo_fd, 0);\
+  } while (0)
+
+#define jisyo_close(d) \
+  do {munmap((d)->jisyo, (d)->jisyo_len); close((d)->jisyo_fd);} while (0)
+
+#define jisyo_read_at(b,j,p) b = (j) + (p)
+
+#else /* USE_MMAP */
 typedef FILE *JISYO;
-#endif
+typedef char JISYO_BUF[BUFSIZ];
+
+#define jisyo_open(d,p) (d)->jisyo = fopen(p, "r")
+
+#define jisyo_close(d) fclose((d)->jisyo)
+
+#define jisyo_read_at(b,j,p) \
+  do {fseek(j, p, SEEK_SET); fgets(b, BUFSIZ, j);} while(0)
+
+#endif /* USE_MMAP */
 
 struct skkdic_data {
-#if USE_MMAP
-  int jisyo_fd;
-  off_t jisyo_len;
-#endif
   struct {
     int *ptr;
     int len;
   } a_tbl, n_tbl;
   JISYO jisyo;
+#if USE_MMAP
+  off_t jisyo_len;
+  int jisyo_fd;
+#endif
 };
 
 static VALUE cSKKDic;
@@ -85,12 +112,7 @@ static void fskkdic_data_free(struct skkdic_data *data)
 {
   free(data->a_tbl.ptr);
   free(data->n_tbl.ptr);
-#if USE_MMAP
-  munmap(data->jisyo, data->jisyo_len);
-  close(data->jisyo_fd);
-#else
-  fclose(data->jisyo);
-#endif
+  jisyo_close(data);
 }
 
 static VALUE
@@ -109,20 +131,7 @@ fskkdic_s_data(VALUE self, VALUE path, VALUE a_tbl, VALUE n_tbl)
   data->n_tbl.len = RSTRING(n_tbl)->len / sizeof(int);
   data->n_tbl.ptr = ALLOC_N(int, data->n_tbl.len);
   memcpy(data->n_tbl.ptr, RSTRING(n_tbl)->ptr, RSTRING(n_tbl)->len);
-
-#if USE_MMAP
-  {
-    struct stat jisyo_stat;
-    data->jisyo_fd = open(STR2CSTR(path), O_RDONLY);
-    fstat(data->jisyo_fd, &jisyo_stat);
-    data->jisyo_len = jisyo_stat.st_size;
-    data->jisyo = (char*)mmap(0, data->jisyo_len,
-			      PROT_READ, MAP_PRIVATE,
-			      data->jisyo_fd, 0);
-  }
-#else
-  data->jisyo = fopen(STR2CSTR(path), "r");
-#endif
+  jisyo_open(data, STR2CSTR(path));
 
   return retval;
 }
@@ -143,12 +152,8 @@ fskkdic_s_search(VALUE self, VALUE vkana, VALUE vdata)
   int pos, left, right;
   int cmp, found;
 
-#if USE_MMAP
-  char *buf;
-#else
-  char buf[BUFSIZ];
-#endif
   JISYO jisyo;
+  JISYO_BUF buf;
   struct skkdic_data *data;
   int *tbl_ptr;
   int tbl_len;
@@ -183,12 +188,7 @@ fskkdic_s_search(VALUE self, VALUE vkana, VALUE vdata)
 
     pos = (left + right) / 2;
 
-#if USE_MMAP
-    buf = jisyo + tbl_ptr[pos];
-#else
-    fseek(jisyo, tbl_ptr[pos], SEEK_SET);
-    fgets(buf, sizeof(buf), jisyo);
-#endif
+    jisyo_read_at(buf, jisyo, tbl_ptr[pos]);
     cmp = strncmp(buf, kana, kana_len);
     if (cmp == 0) {
       found = TRUE;

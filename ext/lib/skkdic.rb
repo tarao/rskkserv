@@ -68,6 +68,10 @@ class SKKDic
       @okuri_ari_table = nil
       @okuri_nasi_table = nil
       GC.start
+
+      @search = proc {|kana| SKKDic.search(kana, @data)}
+    else
+      @search = proc {|kana| search_rb(kana)}
     end
   end
   
@@ -139,18 +143,16 @@ class SKKDic
     return cache
   end
   
-  def search(kana_arg)
-#    Logger::log(Logger::DEBUG, "search: \"%s\", path: %s", kana_arg, @path)
-    kana = kana_arg + " "
-    
-    return SKKDic.search(kana, @data) if SKKDic.respond_to?(:search)
+  def search(kana)
+    @search.call(kana + " ")
+  end
 
+  private
+  def search_rb(kana)
     if kana =~ @okuri_ari_regexp
       table = @okuri_ari_table
-#      Logger::log(Logger::DEBUG, "okuri: ARI")
     else
       table = @okuri_nasi_table
-#      Logger::log(Logger::DEBUG, "okuri: NASI")
     end
     
     left = 0
@@ -160,18 +162,16 @@ class SKKDic
 
       @file.seek(table[pos], 0)
       buff = @file.readline
-#      Logger::log(Logger::DEBUG, "%s", buff.chomp)
       case buff[0, kana.length] <=> kana
       when 0
 	return buff[kana.length + 1 .. -3].split("/")
       when 1
 	right = pos - 1
-      when -1  
+      when -1
 	left = pos + 1
       end
     end
     
-#    Logger::log(Logger::DEBUG, "candidates not found: \"%s\"", kana_arg)
     return []
   end
 
