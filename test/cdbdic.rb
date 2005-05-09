@@ -1,18 +1,16 @@
-# test/skkdic.rb -- unit test for skkdic module,
-#		    using SKK-JISYO.L (v1.30 2000/12/07 12:11:23)
+# test/cdbdic.rb -- unit test for cdbdic module,
+#		    using SKK-JISYO.L.cdb (skkdic-cdb 20040323-1 deb)
 
-require "skkserv/skkdic.rb"
+require "skkserv/cdbdic.rb"
 require "test/unit/testcase"
 
-$jisyo = "/usr/share/skk/SKK-JISYO.L"
-$cachedir = "./test/var"
-$nocache = nil
+$jisyo = "/usr/share/skk/SKK-JISYO.L.cdb"
 
 $stdout.sync = true
 
-class TestSKKDic <Test::Unit::TestCase
+class TestCDBDic <Test::Unit::TestCase
   def setup
-    @skkdic = SKKDic.new($jisyo, $cachedir, $nocache)
+    @skkdic = CDBDic.new($jisyo)
   end
 
   def test_lookup_okuru_ari_failure
@@ -42,7 +40,7 @@ end
 
 if __FILE__ == $0
   require "test/unit/ui/console/testrunner"
-  Test::Unit::UI::Console::TestRunner.run(TestSKKDic.suite)
+  Test::Unit::UI::Console::TestRunner.run(TestCDBDic.suite)
 end
 
-# test/skkdic.rb ends here
+# test/cdbdic.rb ends here

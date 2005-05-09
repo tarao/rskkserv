@@ -1,4 +1,16 @@
+2005-05-07  YAMASHITA Junji  <ysjj@unixuser.org>
+
+	* ext/lib/cdbdic.rb: Added.
+	Backend of SKK dictionary in cdb format.
+	* test/cdbdic.rb: Added.
+	Testsuite for skkserv/cdbdic.rb
+	* ext/lib/nulldic.rb: Added.
+	Backend of NULL dictionary for debugging server behavior.
+	* Makefile.in:
+	(test) Add test runner of cdbdic.rb
+
 2005-05-05  YAMASHITA Junji  <ysjj@unixuser.org>
+
 	* configure.in:
 	VERSION=2.95.3.50-cvs
 	* skkserv.rb.in:

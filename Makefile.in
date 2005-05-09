@@ -99,6 +99,7 @@ test: $(SKKSERV) $(CONFFILE)
 	@[ -e test/var ] || mkdir test/var
 	$(TEST_RUBY) $(TEST_RUBY_OPTIONS) test/skkdic.rb
 	$(TEST_RUBY) $(TEST_RUBY_OPTIONS) test/ebdic.rb
+	$(TEST_RUBY) $(TEST_RUBY_OPTIONS) test/cdbdic.rb
 	@$(TEST_RUBY) skkserv.rb --config test/rskkserv.conf &
 	@sleep 1
 	$(TEST_RUBY) $(TEST_RUBY_OPTIONS) test/skkserv.rb
