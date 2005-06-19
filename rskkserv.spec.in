@@ -1,4 +1,4 @@
-Summary: SKK Dictionary server implemented by Ruby
+Summary: SKK Dictionary server for Ruby
 Name: rskkserv
 Version: @VERSION@
 Release: 2
@@ -13,7 +13,7 @@ Provides: skkserv
 Obsoletes: skkserv, dbskkd-cdb
 
 %description
-rskkserv is an alternate version of skkserv implemented by Ruby.
+rskkserv is an alternate version of skkserv for Ruby.
 
 %prep
 %setup -q
@@ -23,7 +23,7 @@ rskkserv is an alternate version of skkserv implemented by Ruby.
 
 %build
 ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var \
-	--with-rubylibdir=/usr/lib/ruby/1.6
+	--with-rubylibdir=/usr/lib/ruby/1.8
 make RPM_OPT_FLAGS="${RPM_OPT_FLAGS}"
 
 
@@ -44,8 +44,8 @@ find $RPM_BUILD_ROOT -type d -printf "%%%%dir %%p\n" | \
 
 
 %changelog
-* Tue Nov 13 2001 SATO Satoru <ssato@redhat.com> - 2.94.12-2
+* Tue Nov 13 2001 Satoru SATOH <ssato@redhat.com> - 2.94.12-2
 - fix: the libraries of rskkserv are not installed
 
-* Wed Oct 17 2001 SATO Satoru <ssato@redhat.com> - 2.94.12-1
+* Wed Oct 17 2001 Satoru SATOH <ssato@redhat.com> - 2.94.12-1
 - Initial release

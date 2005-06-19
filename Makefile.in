@@ -95,6 +95,7 @@ TEST_RUBY_OPTIONS = -Ke
 
 test: $(SKKSERV) $(CONFFILE)
 	@[ -e skkserv ] || ln -s ext/lib skkserv
+	@[ -e test ] || mkdir test
 	@[ -e test/conf ] || mkdir test/conf
 	@[ -e test/var ] || mkdir test/var
 	$(TEST_RUBY) $(TEST_RUBY_OPTIONS) test/skkdic.rb

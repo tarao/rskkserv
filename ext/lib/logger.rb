@@ -27,7 +27,7 @@ class Logger
   ALERT   = 1
   CRIT    = 2
   ERR     = 3
-  WARNING = 4
+  WARN    = 4; WARNING = WARN
   NOTICE  = 5
   INFO    = 6
   DEBUG   = 7
@@ -56,12 +56,12 @@ class Logger
     @@level
   end
 
-  def self.level=(new_level)
-    if new_level < NOLOG or DEBUG < new_level
-      raise ArgumentError, "invalid level: #{new_level}"
-    end
+  def self.level=(new_lvl)
+    new_lvl = const_get(new_lvl.to_s) unless new_lvl.class == NOLOG.class
+    raise ArgumentError, "unknown log level: #{new_lvl}" \
+      unless NOLOG <= new_lvl && new_lvl <= DEBUG
 
-    @@level = new_level
+    @@level = new_lvl
   end
 
   def self.verbose
@@ -78,6 +78,10 @@ class Logger
 
   def self.filename
     @@filename
+  end
+
+  ["WARN", "NOTICE", "INFO", "DEBUG"].each do |lvl|
+    eval "def self.log_#{lvl.downcase}(f,*a);self.log(#{lvl},f,*a);end"
   end
 end
 

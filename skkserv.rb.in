@@ -29,8 +29,6 @@ require "getopts"
 require "skkserv/conf"
 require "skkserv/logger"
 
-getopts("d", "p:", "config:", "help", "verbose", "version")
-
 class SKKServer
   VERSION_STRING = "rskkserv-@VERSION@ "
   
@@ -48,7 +46,7 @@ class SKKServer
   
   BUFSIZE = 512
   
-  def SKKServer.main
+  def self.main
     if $OPT_help
       usage
       exit(0)
@@ -66,6 +64,7 @@ class SKKServer
 
       daemon if daemon?
       write_pid(@config.pid_file) if @config.pid_file
+      setup_sighdl
 
       skkserv.mainloop
     rescue LoadError
@@ -80,7 +79,7 @@ class SKKServer
     end
   end
   
-  def SKKServer.usage
+  def self.usage
     $stderr.printf(<<USAGE, $0)
 Usage: %s [OPTION] [skk-dictionary-file]
 
@@ -94,11 +93,11 @@ USAGE
 
   end
 
-  def SKKServer.daemon?
+  def self.daemon?
     @config.daemon and ! $OPT_d
   end
 
-  def SKKServer.daemon
+  def self.daemon
     exit!(0) if fork
     Process::setsid
     exit!(0) if fork
@@ -114,7 +113,7 @@ USAGE
     end
   end
 
-  def SKKServer.write_pid(filename)
+  def self.write_pid(filename)
     begin
       f = open(filename, "w")
       f.printf("%d\n", $$)
@@ -128,18 +127,28 @@ USAGE
     at_exit {
 	File.unlink(@config.pid_file) if File.exists?(@config.pid_file)
     }
+  end
+
+  def self.setup_sighdl
+    @sig = 0
+    sighdr = proc {|sig| @sig = sig}
     for sig in [:INT, :TERM]
-      trap(sig, "EXIT")
+      trap(sig, sighdr)
     end
+    @sig_watcher = Thread.start {
+      sleep 0.1 until @sig > 0
+      Logger.log_info("Caught signal %d, exiting...", @sig)
+      exit
+    }
   end
 
   def initialize(dic, config)
     @config = config
-    Logger::level = $OPT_d ? Logger::DEBUG : Logger.const_get(@config.log_level)
+    Logger::level = $OPT_d ? Logger::DEBUG : @config.log_level
     Logger::verbose = $OPT_verbose
     Logger::filename = @config.log_file
 
-    Logger::log(Logger::DEBUG, "running on %s", host)
+    Logger::log_debug("running on %s", host)
 
     service = $OPT_p || @config.port || "skkserv"
     begin
@@ -157,16 +166,15 @@ USAGE
       end
     end
 
-    Logger::log(Logger::DEBUG,
-		"listen to %s", @server.addr[1..-1].join(":"))
+    Logger::log_debug("listen to %s", @server.addr[1..-1].join(":"))
 
     if @config.tcpwrap
       begin
 	require "tcpwrap"
 	@server = TCPWrapper.new(File.basename($0), @server, true)
-	Logger::log(Logger::INFO, "loaded tcpwrap")
+	Logger::log_info("loaded tcpwrap")
       rescue LoadError
-	Logger::log(Logger::INFO, "failed to load tcpwrap")
+	Logger::log_info("failed to load tcpwrap")
       end
     end
 
@@ -180,10 +188,10 @@ USAGE
       while cmdbuf = s.sysread(BUFSIZE)
 	case cmdbuf[0]
 	when CLIENT_END
-	  Logger::log(Logger::DEBUG, "message from client %s: END", peer)
+	  Logger::log_debug("message from client %s: END", peer)
 	  break
 	when CLIENT_REQUEST
-#	  Logger::log(Logger::DEBUG, "message from client %s: WORD", peer)
+#	  Logger::log_debug("message from client %s: WORD", peer)
 	  cmdend = cmdbuf.index(?\ ) || cmdbuf.index(?\n) 
 	  kana = cmdbuf[1 .. (cmdend - 1)]
 	  ret = ""
@@ -199,21 +207,20 @@ USAGE
             ret.concat(SERVER_ERROR)
             ret.concat($!)
           end
-#	  Logger::log(Logger::DEBUG, "send: \"%s\"", ret)
+#	  Logger::log_debug("send: \"%s\"", ret)
 	  s.write(ret)
 	when CLIENT_VERSION
-	  Logger::log(Logger::DEBUG, "message from client %s: VERSION", peer)
-	  Logger::log(Logger::DEBUG, "send: \"%s\"", VERSION_STRING)
+	  Logger::log_debug("message from client %s: VERSION", peer)
+	  Logger::log_debug("send: \"%s\"", VERSION_STRING)
 	  s.write(VERSION_STRING)
 	when CLIENT_HOST
 	  ret = host(s)
-	  Logger::log(Logger::DEBUG, "message from client %s: HOST", peer)
-	  Logger::log(Logger::DEBUG, "send: \"%s\"", ret)
+	  Logger::log_debug("message from client %s: HOST", peer)
+	  Logger::log_debug("send: \"%s\"", ret)
 	  s.write(ret)
 	else
-	  Logger::log(Logger::NOTICE,
-		      "message from client %s: UNKNOWN: %d/\"%s\"",
-		      peer, cmdbuf[0], cmdbuf)
+	  Logger::log_notice("message from client %s: UNKNOWN: %d/\"%s\"",
+	      peer, cmdbuf[0], cmdbuf)
 	end
       end
     end
@@ -225,19 +232,18 @@ USAGE
       begin
 	s = @server.accept
       rescue
-	Logger::log(Logger::WARNING, "%s", $!)
+	Logger::log_warn("%s", $!)
 	next
       end
 
       peer = peer_string(s)
 
-      Logger::log(Logger::INFO, "%s is accepted.", peer)
+      Logger::log_info("%s is accepted.", peer)
       if @nclients >= @config.max_clients
 	begin
 	  s.putc(SERVER_FULL)
-	  Logger::log(Logger::WARNING,
-		      "%s: Connection rejected: %d: too many clients.",
-		      peer, @nclients)
+	  Logger::log_warn("%s: Connection rejected: %d: too many clients.",
+	      peer, @nclients)
 	ensure
 	  s.shutdown
 	  s.close
@@ -245,18 +251,18 @@ USAGE
 	end
       end
       @nclients += 1
-      Logger::log(Logger::DEBUG, "There are %d clients.", @nclients)
+      Logger::log_debug("There are %d clients.", @nclients)
       Thread.start do
 	begin
 	  yield(s)
 	rescue Exception
-	  Logger::log(Logger::DEBUG, "%s: %s", $!, peer)
+	  Logger::log_debug("%s: %s", $!, peer)
 	ensure
 	  s.shutdown
 	  s.close
-	  Logger::log(Logger::INFO, "%s is gone.", peer)
+	  Logger::log_info("%s is gone.", peer)
 	  @nclients -= 1
-	  Logger::log(Logger::DEBUG, "There are %d clients.", @nclients)
+	  Logger::log_debug("There are %d clients.", @nclients)
 	end
       end
     end
@@ -294,12 +300,12 @@ class SKKDictionary
       agent = SKKDic.new(dic,
 			 @config.skk_cache_dir,
 			 @config.skk_no_cache)
-      Logger::log(Logger::DEBUG, "add agent: %s", agent)
+      Logger::log_debug("add agent: %s", agent)
       @search_agents.push(agent)
     end
 
     @config.dic.each do |dic|
-      Logger::log(Logger::DEBUG, "add dic = #{dic}")
+      Logger::log_debug("add dic = #{dic}")
       @search_agents.push(create_agent(dic))
     end
 
@@ -309,7 +315,7 @@ class SKKDictionary
   end
 
   def search(kana)
-#    Logger::log(Logger::DEBUG, "search: \"%s\"", kana)
+#    Logger::log_debug("search: \"%s\"", kana)
 
     @mutex.synchronize do
       candidates = []
@@ -350,6 +356,9 @@ class SKKDictionary
   end
 end
 
-SKKServer.main
+if $0 == __FILE__
+  getopts("d", "p:", "config:", "help", "verbose", "version")
+  SKKServer.main
+end
 
 ### skkserv.rb ends here

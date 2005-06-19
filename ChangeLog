@@ -1,3 +1,20 @@
+2005-06-19  YAMASHITA Junji  <ysjj@unixuxer.org>
+
+	* configure.in:
+	VERSION=2.95.4
+	* skkserv.rb:
+	s/def SKKServ./def self./.
+	Use Logger new API.
+	(setup_sighdl) Added.
+	Introduce the thread of watching to caught signals,
+	for workaround [ruby-dev:26128], [ruby-dev:26337].
+	(write_pid) Move signal handler to setup_sighdl.
+	* ext/lib/logger.rb:
+	(WARN) New constant. Now the constant WARNING is deprecated.
+	(log_warn,log_notice,log_info,log_debug) Added.
+	New Logging API.
+	(level=) Accept string for level expr.
+
 2005-05-07  YAMASHITA Junji  <ysjj@unixuser.org>
 
 	* ext/lib/cdbdic.rb: Added.
