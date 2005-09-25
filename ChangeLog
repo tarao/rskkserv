@@ -11,6 +11,8 @@
 	NULLDic.
 	(reload): Added.
 	Preparation for reloading dictionary.
+	* ext/skkdic.c: Almost rewrite.
+	Now threre is no limit about the entries length.
 	
 2005-06-19  YAMASHITA Junji  <ysjj@unixuxer.org>
 
