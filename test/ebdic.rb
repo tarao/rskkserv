@@ -1,6 +1,6 @@
 ### test/ebdic.rb -- unit test for ebdic module, using KOUJIEN/MYPAEDIA/WDIC
 
-require 'skkserv/ebdic.rb'
+require 'skkserv/ebdic'
 require 'test/unit/testcase'
 require 'test/unit/testsuite'
 

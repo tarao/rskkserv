@@ -33,7 +33,9 @@ class SKKServer
   VERSION_STRING = "rskkserv-@VERSION@ "
   
   DEFAULT_CONFILE = "@sysconfdir@/rskkserv.conf"
-  
+
+  DEFAULT_PORT = 1178  
+
   CLIENT_END = ?0
   CLIENT_REQUEST = ?1
   CLIENT_VERSION = ?2
@@ -159,7 +161,7 @@ USAGE
 		end
     rescue
       if service == "skkserv"
-	service = 1178
+	service = DEFAULT_PORT
 	retry
       else
 	raise

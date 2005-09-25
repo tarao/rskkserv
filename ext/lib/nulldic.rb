@@ -34,6 +34,9 @@ class NULLDic
     []
   end
 
+  def reload
+  end
+
   def self.create(path, options, config)
     NULLDic.new()
   end

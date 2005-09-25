@@ -1,3 +1,17 @@
+2005-09-26  YAMASHITA Junji  <ysjj@unixuxer.org>
+	* configure.in:
+	VERSION=2.95.4.50-cvs
+	* skkserv.rb:
+	(DEFAULT_PORT) Added.
+	Share the default skkserv port with skkserv/skkservdic.rb.
+	* ext/lib/skkservdic.rb: Added.
+	Backend of relaying to another skkserv using tcp/ip or pipe.
+	* ext/lib/nulldic.rb: NULLDic will be the super class of other
+	backend. Therefore, default behavior will be implemented in
+	NULLDic.
+	(reload): Added.
+	Preparation for reloading dictionary.
+	
 2005-06-19  YAMASHITA Junji  <ysjj@unixuxer.org>
 
 	* configure.in:

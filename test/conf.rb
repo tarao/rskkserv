@@ -8,8 +8,8 @@ $stdout.sync = true
 
 class TestConf <Test::Unit::TestSuite
   def self.suite
-    testsuite = TestConf.new
-    testsuite.add_test(TestConfNormal.suite)
+    testsuite = TestConf.new(self.name)
+    testsuite << TestConfNormal.suite
 
     testsuite
   end

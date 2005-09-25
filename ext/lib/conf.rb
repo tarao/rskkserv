@@ -36,7 +36,7 @@ class Conf
   OptionValue = Struct.new("OptionValue", :defval, :xproc)
 
   OPTIONS = {
-      "port" => OptionValue.new(1178, :str2int),
+      "port" => OptionValue.new("skkserv", :str2serv),
       "host" => OptionValue.new(nil, :str2str),
       "daemon" => OptionValue.new(true, :str2bool),
       "max_clients" => OptionValue.new(128, :str2int),
@@ -96,6 +96,10 @@ class Conf
 
   def str2sym(val)
     val.upcase.intern
+  end
+
+  def str2serv(val)
+    (/\A\d+\Z/ =~ val) ? str2int(val) : str2str(val)
   end
 
   def def_options(obj)
