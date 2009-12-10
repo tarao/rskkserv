@@ -1,0 +1,10 @@
+README.old
+build-stamp
+configure-stamp
+*.log
+*.debhelper
+*.substvars
+debian/files
+debian/rskkserv
+doc/rskkserv.1
+doc/rskkserv.1.ja_JP.eucJP
