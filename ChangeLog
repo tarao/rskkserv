@@ -1,3 +1,9 @@
+2009-12-10  INA Lintaro <tarao.gnn@gmail.com>
+	* doc/README.old: Added.
+	For rebuilding the package.
+	* ext/lib/skkservdic.rb:
+	Remove needless require.
+
 2005-09-26  YAMASHITA Junji  <ysjj@unixuxer.org>
 	* configure.in:
 	VERSION=2.95.4.50-cvs
