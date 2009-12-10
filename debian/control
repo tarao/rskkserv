@@ -10,8 +10,5 @@ Architecture: any
 Depends: ruby, skkdic, ${shlibs:Depends}
 Recommends: libwrap-ruby1.8
 Suggests: skkdic-extra, libeb-ruby1.8
-Provides: skkserv
-Conflicts: skkserv
-Replaces: skkserv
 Description: SKK Dictionary server implemented by Ruby
  rskkserv is an alternate version of skkserv implemented by Ruby.
