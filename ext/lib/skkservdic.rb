@@ -28,7 +28,6 @@ require "uri"
 
 require "skkserv/logger"
 require "skkserv/nulldic"
-require "skkserv"
 
 class SKKSERVDic <NULLDic
   def initialize(con)
