@@ -1,4 +1,6 @@
 2009-12-10  INA Lintaro <tarao.gnn@gmail.com>
+	* configure.in:
+	VERSION=2.95.5
 	* doc/README.old: Added.
 	For rebuilding the package.
 	* ext/lib/skkservdic.rb:

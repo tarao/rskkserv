@@ -1,3 +1,9 @@
+rskkserv (2.95.5) unstable; urgency=low
+
+  * New upstream version
+
+ -- INA Lintaro <tarao.gnn@gmail.com>  Thu, 10 Dec 2009 06:52:03 +0000
+
 rskkserv (2.95.4-2) unstable; urgency=low
 
   * Fix for rebuilding the package.
