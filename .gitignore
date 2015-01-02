@@ -8,3 +8,12 @@ debian/files
 debian/rskkserv
 doc/rskkserv.1
 doc/rskkserv.1.ja_JP.eucJP
+/SKK-JISYO.JIS3_4
+/SKK-JISYO.JIS3_4.utf-8
+/autom4te.cache/
+/ext/.RUBYARCHDIR.time
+/ext/.RUBYLIBDIR.time
+/ext/skkdic.o
+/ext/skkdic.so
+/rskkserv.conf~
+/skkserv.rb~
