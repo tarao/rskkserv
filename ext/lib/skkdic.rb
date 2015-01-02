@@ -32,7 +32,7 @@ begin
   require "skkserv/skkdic.so"
 rescue LoadError
   Logger::log(Logger::WARNING, "%s: %s", $0, $!)
-#  raise RuntimeError, "can't load `skkserv/skkdic.so'" # for DEBUG
+  raise RuntimeError, "can't load `skkserv/skkdic.so'" # for DEBUG
 end
 
 class SKKDic

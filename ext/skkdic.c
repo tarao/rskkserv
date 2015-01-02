@@ -145,14 +145,14 @@ fskkdic_s_data(VALUE self, VALUE path, VALUE a_tbl, VALUE n_tbl)
   retval = Data_Make_Struct(rb_cData, struct skkdic_data, 0,
 			    fskkdic_data_free, data);
 
-  data->a_tbl.len = RSTRING(a_tbl)->len / sizeof(int);
+  data->a_tbl.len = RSTRING_LEN(a_tbl) / sizeof(int);
   data->a_tbl.ptr = ALLOC_N(int, data->a_tbl.len);
-  memcpy(data->a_tbl.ptr, RSTRING(a_tbl)->ptr, RSTRING(a_tbl)->len);
+  memcpy(data->a_tbl.ptr, RSTRING_PTR(a_tbl), RSTRING_LEN(a_tbl));
 
-  data->n_tbl.len = RSTRING(n_tbl)->len / sizeof(int);
+  data->n_tbl.len = RSTRING_LEN(n_tbl) / sizeof(int);
   data->n_tbl.ptr = ALLOC_N(int, data->n_tbl.len);
-  memcpy(data->n_tbl.ptr, RSTRING(n_tbl)->ptr, RSTRING(n_tbl)->len);
-  skkdic_open(data, STR2CSTR(path));
+  memcpy(data->n_tbl.ptr, RSTRING_PTR(n_tbl), RSTRING_LEN(n_tbl));
+  skkdic_open(data, StringValuePtr(path));
   data->bufsize = 16;
 
   return retval;
@@ -169,7 +169,7 @@ is_okuri_ari(const char *kana, int len)
 static VALUE
 fskkdic_s_search(VALUE self, VALUE vkana, VALUE vdata)
 {
-  char *kana = STR2CSTR(vkana);
+  char *kana = StringValuePtr(vkana);
   int kana_len = strlen(kana);
   int pos, left, right;
   int found;

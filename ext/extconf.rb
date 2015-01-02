@@ -3,7 +3,7 @@
 require "mkmf"
 
 # guessing `rubylibdir' and `rubyarchdir'
-prefix = "@prefix@"
+prefix = "/usr/local"
 if prefix == CONFIG["prefix"]
   rubylibdir = CONFIG["rubylibdir"]
   rubyarchdir = CONFIG["archdir"]
@@ -13,8 +13,8 @@ else
 end
 
 # override the guessed dir, if passed by args
-rubylibdir = "@rubylibdir@" if "@rubylibdir@" != "guessed"
-rubyarchdir = "@rubyarchdir@" if "@rubyarchdir@" != "guessed"
+rubylibdir = "guessed" if "guessed" != "guessed"
+rubyarchdir = "guessed" if "guessed" != "guessed"
 
 def create_depend(libdir, archdir)
   srcdir = File.dirname($0)
