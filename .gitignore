@@ -17,3 +17,5 @@ doc/rskkserv.1.ja_JP.eucJP
 /ext/skkdic.so
 /rskkserv.conf~
 /skkserv.rb~
+/SKK-JISYO.itaiji.JIS3_4.utf-8
+/ext/lib/googledic.rb~
