@@ -1,4 +1,5 @@
 #!/usr/bin/ruby 
+# coding: utf-8
 ### skkserv.rb --- rskkserv main routines         -*- Mode: Ruby -*-
 
 ## Copyright (C) 1997-2000  Shugo Maeda
@@ -29,6 +30,7 @@ require "optparse"
 require "skkserv/conf"
 require "skkserv/logger"
 require "skkserv/skkdic"
+require "skkserv/googledic"
 
 class SKKServer
   VERSION_STRING = "rskkserv-2.95.5 "
@@ -194,7 +196,7 @@ USAGE
 	  Logger::log_debug("message from client %s: END", peer)
 	  break
 	when CLIENT_REQUEST
-#	  Logger::log_debug("message from client %s: WORD", peer)
+	  Logger::log_debug("message from client %s: WORD", peer)
 	  cmdend = cmdbuf.index(?\ ) || cmdbuf.index(?\n) 
 	  kana = cmdbuf[1 .. (cmdend - 1)]
 	  ret = ""
@@ -210,7 +212,7 @@ USAGE
             ret.concat(SERVER_ERROR)
             ret.concat($!)
           end
-#	  Logger::log_debug("send: \"%s\"", ret)
+	  Logger::log_debug("send: \"%s\"", ret)
 	  s.write(ret)
 	when CLIENT_VERSION
 	  Logger::log_debug("message from client %s: VERSION", peer)
@@ -324,7 +326,13 @@ class SKKDictionary
       candidates = []
 
       @search_agents.each do |agent|
-	candidates |= agent.search(kana)
+        Logger::log_debug("agent: %s", agent)
+        tmp = agent.search(kana)
+        for i in tmp do
+          Logger::log_debug("tmp code: %s", i.encoding)
+        end
+	candidates |= tmp
+        Logger::log_debug("tmp: %s", tmp);
       end
       return nil if candidates.empty?
 

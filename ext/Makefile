@@ -2,7 +2,7 @@
 SHELL = /bin/sh
 
 # V=0 quiet, V=1 verbose.  other values don't work.
-V = 0
+V = 1
 Q1 = $(V:1=)
 Q = $(Q1:0=@)
 ECHO1 = $(V:1=@:)
@@ -203,6 +203,9 @@ $(RUBYLIBDIR)/conf.rb: $(srcdir)/lib/conf.rb ./.RUBYLIBDIR.time
 install-rb-default: $(RUBYLIBDIR)/nulldic.rb
 $(RUBYLIBDIR)/nulldic.rb: $(srcdir)/lib/nulldic.rb ./.RUBYLIBDIR.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/nulldic.rb $(@D)
+install-rb-default: $(RUBYLIBDIR)/googledic.rb
+$(RUBYLIBDIR)/googledic.rb: $(srcdir)/lib/googledic.rb ./.RUBYLIBDIR.time
+	$(Q) $(INSTALL_DATA) $(srcdir)/lib/googledic.rb $(@D)
 install-rb-default: $(RUBYLIBDIR)/skkservdic.rb
 $(RUBYLIBDIR)/skkservdic.rb: $(srcdir)/lib/skkservdic.rb ./.RUBYLIBDIR.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/skkservdic.rb $(@D)

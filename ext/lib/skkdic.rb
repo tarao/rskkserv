@@ -1,3 +1,4 @@
+# coding: utf-8
 ### skkserv/skkdic.rb --- rskkserv module for skkdic format dictionary.
 
 ## Copyright (C) 1997-2000  Shugo Maeda
