@@ -9,4 +9,8 @@ INSTALL
 2. sudo cp 06rskkserv.conf /etc/ld.so.conf.d
 3. sudo ldconfig
 
-This version is modified for Ruby 2.0.  No new features are added.
+Changes
+=======
+
+1. Avairable for `Google CGI API for Japanese Input'
+2. Default String char code is UTF-8
