@@ -337,6 +337,7 @@ class SKKDictionary
       return nil if candidates.empty?
 
       candidates.delete(kana)
+      candidates.reverse!
       "/" << candidates.join("/") << "/\n"
     end
   end
