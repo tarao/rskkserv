@@ -12,10 +12,14 @@ class GOOGLEDic
   end
 
   def search(kana)
+    if kana[-1].ascii_only? then
+      Logger::log(Logger::DEBUG, "last char is %s", kana[-1])
+      return []
+    end
     begin
       params = "langpair=ja-Hira|ja&text=" + URI.escape(kana + ',')
       Logger::log(Logger::DEBUG, "params: %s", params)
-      json = Net::HTTP.get "www.google.com", "/transliterate?" + params
+      json = Net::HTTP.get "ipv6.google.com", "/transliterate?" + params
       Logger::log(Logger::DEBUG, "json: %s", json)
       tmp = JSON.load(json)
       tmp2 = tmp[0][1]
