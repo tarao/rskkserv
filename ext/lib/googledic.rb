@@ -33,6 +33,7 @@ class GOOGLEDic
       raise if $!.to_s != "fail searching"
       result = []
     end
+    result.reverse!
     result
   end
 

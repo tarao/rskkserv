@@ -43,6 +43,7 @@ class SKKServer
   CLIENT_REQUEST = ?1
   CLIENT_VERSION = ?2
   CLIENT_HOST = ?3
+  CLIENT_COMPLETION = ?4
   
   SERVER_ERROR = ?0
   SERVER_FOUND = ?1
@@ -188,6 +189,7 @@ USAGE
   end
   
   def mainloop
+    comp_str = []
     accept_clients do |s|
       peer = peer_string(s)
       while cmdbuf = s.sysread(BUFSIZE)
@@ -223,6 +225,13 @@ USAGE
 	  Logger::log_debug("message from client %s: HOST", peer)
 	  Logger::log_debug("send: \"%s\"", ret)
 	  s.write(ret)
+    when CLIENT_COMPLETION
+      ret = ""
+      ret.concat(SERVER_FOUND)
+      ret.concat("/")
+      ret.concat("/\n")
+      Logger::log_debug("send: completion: %s", ret)
+      s.write(ret)
 	else
 	  Logger::log_notice("message from client %s: UNKNOWN: %d/\"%s\"",
 	      peer, cmdbuf[0], cmdbuf)
@@ -328,16 +337,12 @@ class SKKDictionary
       @search_agents.each do |agent|
         Logger::log_debug("agent: %s", agent)
         tmp = agent.search(kana)
-        for i in tmp do
-          Logger::log_debug("tmp code: %s", i.encoding)
-        end
-	candidates |= tmp
+	    candidates |= tmp
         Logger::log_debug("tmp: %s", tmp);
       end
       return nil if candidates.empty?
 
       candidates.delete(kana)
-      candidates.reverse!
       "/" << candidates.join("/") << "/\n"
     end
   end
