@@ -7,7 +7,7 @@
 
 ## Author:	Shugo Maeda <shugo@aianet.ne.jp>
 ## Maintainer:	YAMASHITA Junji <ysjj@unixuser.org>
-## Version:	2.95.5
+## Version:	3.0.0
 
 ## This file is part of rskkserv.
 
@@ -33,7 +33,7 @@ require "skkserv/skkdic"
 require "skkserv/googledic"
 
 class SKKServer
-  VERSION_STRING = "rskkserv-2.95.5 "
+  VERSION_STRING = "rskkserv-3.0.0 "
   
   DEFAULT_CONFILE = "/usr/local/etc/rskkserv.conf"
 
