@@ -53,18 +53,18 @@ class SKKServer
   BUFSIZE = 512
   
   def self.main
-    if $OPT_help
+    if $params["help"]
       usage
       exit(0)
     end
-    if $OPT_version
+    if $params["version"]
       print("SKK SERVER ", VERSION_STRING, "\n")
       exit(0)
     end
     
     skkserv = nil
     begin
-      @config = Conf.new($OPT_config || DEFAULT_CONFILE)
+      @config = Conf.new($params["config"] || DEFAULT_CONFILE)
 
       skkserv = new(ARGV[0], @config)
 
@@ -100,7 +100,7 @@ USAGE
   end
 
   def self.daemon?
-    @config.daemon and ! $OPT_d
+    @config.daemon and ! $params["d"]
   end
 
   def self.daemon
@@ -150,13 +150,13 @@ USAGE
 
   def initialize(dic, config)
     @config = config
-    Logger::level = $OPT_d ? Logger::DEBUG : @config.log_level
-    Logger::verbose = $OPT_verbose
+    Logger::level = $params["d"] ? Logger::DEBUG : @config.log_level
+    Logger::verbose = $params["verbose"]
     Logger::filename = @config.log_file
 
     Logger::log_debug("running on %s", host)
 
-    service = $OPT_p || @config.port || "skkserv"
+    service = $params["p"] || @config.port || "skkserv"
     begin
       @server = if @config.host
 		  TCPServer.new(@config.host, service)
@@ -374,7 +374,7 @@ class SKKDictionary
 end
 
 if $0 == __FILE__
-  params = ARGV.getopts("d", "p:", "config:", "help", "verbose", "version")
+  $params = ARGV.getopts("d", "p:", "config:", "help", "verbose", "version")
   SKKServer.main
 end
 
