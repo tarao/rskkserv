@@ -19,7 +19,7 @@ class GOOGLEDic
     begin
       params = "langpair=ja-Hira|ja&text=" + URI.escape(kana + ',')
       Logger::log(Logger::DEBUG, "params: %s", params)
-      json = Net::HTTP.get "ipv6.google.com", "/transliterate?" + params
+      json = Net::HTTP.get @path, "/transliterate?" + params
       Logger::log(Logger::DEBUG, "json: %s", json)
       tmp = JSON.load(json)
       tmp2 = tmp[0][1]
