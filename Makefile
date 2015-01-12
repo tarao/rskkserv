@@ -73,9 +73,11 @@ clean:
 	rm -f $(SKKSERV) $(CONFFILE)
 
 install: all installdirs
-	cd ext; make DESTDIR=$(DESTDIR) install; cd ..
+	cd ext; make DESTDIR=$(DESTDIR) rss-install; cd ..
 	$(INSTALL) -m0755 $(SKKSERV) $(DESTDIR)$(sbindir)/$(SKKSERV)
-	$(INSTALL) -m0644 $(CONFFILE) $(DESTDIR)$(sysconfdir)/ 
+	if [ ! -f $(DESTDIR)$(sysconfdir)/$(CONFFILE) ]; then \
+	    $(INSTALL) -m0644 $(CONFFILE) $(DESTDIR)$(sysconfdir)/; \
+	fi
 
 installdirs:
 	mkdir -p $(DESTDIR)$(sbindir)

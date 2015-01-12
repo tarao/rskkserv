@@ -2,7 +2,7 @@
 SHELL = /bin/sh
 
 # V=0 quiet, V=1 verbose.  other values don't work.
-V = 1
+V = 0
 Q1 = $(V:1=)
 Q = $(Q1:0=@)
 ECHO1 = $(V:1=@:)
@@ -11,12 +11,12 @@ ECHO = $(ECHO1:0=@echo)
 #### Start of system configuration section. ####
 
 srcdir = .
-topdir = /usr/include/ruby-2.0.0
+topdir = /usr/include/ruby-2.1.0
 hdrdir = $(topdir)
-arch_hdrdir = /usr/include/ruby-2.0.0/x86_64-linux
+arch_hdrdir = /usr/include/ruby-2.1.0/x86_64-linux
 PATH_SEPARATOR = :
 VPATH = $(srcdir):$(arch_hdrdir)/ruby:$(hdrdir)/ruby
-prefix = /usr
+prefix = $(DESTDIR)/usr
 rubysitearchprefix = $(rubylibprefix)/$(sitearch)
 rubyarchprefix = $(rubylibprefix)/$(arch)
 rubylibprefix = $(libdir)/$(RUBY_BASE_NAME)
@@ -48,8 +48,8 @@ pdfdir = $(docdir)
 dvidir = $(docdir)
 htmldir = $(docdir)
 infodir = $(DESTDIR)/usr/share/info
-docdir = $(DESTDIR)/usr/share/doc/ruby-2.0.0_p598
-oldincludedir = /usr/include
+docdir = $(DESTDIR)/usr/share/doc/ruby-2.1.5
+oldincludedir = $(DESTDIR)/usr/include
 includedir = $(prefix)/include
 localstatedir = $(DESTDIR)/var/lib
 sharedstatedir = $(prefix)/com
@@ -92,8 +92,8 @@ LDSHAREDXX = $(CXX) -shared
 AR = x86_64-pc-linux-gnu-ar
 EXEEXT = 
 
-RUBY_INSTALL_NAME = ruby20
-RUBY_SO_NAME = ruby20
+RUBY_INSTALL_NAME = ruby21
+RUBY_SO_NAME = ruby21
 RUBYW_INSTALL_NAME = 
 RUBY_VERSION_NAME = $(RUBY_BASE_NAME)-$(ruby_version)
 RUBYW_BASE_NAME = rubyw
@@ -101,10 +101,10 @@ RUBY_BASE_NAME = ruby
 
 arch = x86_64-linux
 sitearch = $(arch)
-ruby_version = 2.0.0
-ruby = $(bindir)/ruby20
+ruby_version = 2.1.0
+ruby = $(bindir)/ruby21
 RUBY = $(ruby)
-ruby_headers = $(hdrdir)/ruby.h $(hdrdir)/ruby/defines.h $(arch_hdrdir)/ruby/config.h
+ruby_headers = $(hdrdir)/ruby.h $(hdrdir)/ruby/ruby.h $(hdrdir)/ruby/defines.h $(hdrdir)/ruby/missing.h $(hdrdir)/ruby/intern.h $(hdrdir)/ruby/st.h $(hdrdir)/ruby/subst.h $(arch_hdrdir)/ruby/config.h
 
 RM = rm -f
 RM_RF = $(RUBY) -run -e rm -- -rf
@@ -132,7 +132,7 @@ extout =
 extout_prefix = 
 target_prefix = /skkserv
 LOCAL_LIBS = 
-LIBS = $(LIBRUBYARG_SHARED)  -lpthread -lrt -ldl -lcrypt -lm   -lc
+LIBS = $(LIBRUBYARG_SHARED)  -lpthread -lgmp -ldl -lcrypt -lm   -lc
 ORIG_SRCS = skkdic.c
 SRCS = $(ORIG_SRCS) 
 OBJS = skkdic.o
@@ -144,12 +144,13 @@ DLLIB = $(TARGET).so
 EXTSTATIC = 
 STATIC_LIB = 
 
-BINDIR        = $(DESTDIR)$(bindir)
-RUBYCOMMONDIR = $(DESTDIR)$(sitedir)$(target_prefix)
-RUBYLIBDIR    = $(DESTDIR)$(sitelibdir)$(target_prefix)
-RUBYARCHDIR   = $(DESTDIR)$(sitearchdir)$(target_prefix)
-HDRDIR        = $(DESTDIR)$(rubyhdrdir)/ruby$(target_prefix)
-ARCHHDRDIR    = $(DESTDIR)$(rubyhdrdir)/$(arch)/ruby$(target_prefix)
+TIMESTAMP_DIR = .
+BINDIR        = $(bindir)
+RUBYCOMMONDIR = $(sitedir)$(target_prefix)
+RUBYLIBDIR    = $(sitelibdir)$(target_prefix)
+RUBYARCHDIR   = $(sitearchdir)$(target_prefix)
+HDRDIR        = $(rubyhdrdir)/ruby$(target_prefix)
+ARCHHDRDIR    = $(rubyhdrdir)/$(arch)/ruby$(target_prefix)
 
 TARGET_SO     = $(DLLIB)
 CLEANLIBS     = $(TARGET).so 
@@ -179,7 +180,7 @@ distclean: clean distclean-so distclean-static distclean-rb-default distclean-rb
 realclean: distclean
 install: install-so install-rb
 
-install-so: $(DLLIB) ./.RUBYARCHDIR.time
+install-so: $(DLLIB) $(TIMESTAMP_DIR)/.RUBYARCHDIR.-.skkserv.time
 	$(INSTALL_PROG) $(DLLIB) $(RUBYARCHDIR)
 clean-static::
 	-$(Q)$(RM) $(STATIC_LIB)
@@ -187,38 +188,38 @@ install-rb: pre-install-rb install-rb-default
 install-rb-default: pre-install-rb-default
 pre-install-rb: Makefile
 pre-install-rb-default: Makefile
-pre-install-rb-default: ./.RUBYLIBDIR.time
+pre-install-rb-default: $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
 install-rb-default: $(RUBYLIBDIR)/cdbdic.rb
-$(RUBYLIBDIR)/cdbdic.rb: $(srcdir)/lib/cdbdic.rb ./.RUBYLIBDIR.time
+$(RUBYLIBDIR)/cdbdic.rb: $(srcdir)/lib/cdbdic.rb $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/cdbdic.rb $(@D)
 install-rb-default: $(RUBYLIBDIR)/skkdic.rb
-$(RUBYLIBDIR)/skkdic.rb: $(srcdir)/lib/skkdic.rb ./.RUBYLIBDIR.time
+$(RUBYLIBDIR)/skkdic.rb: $(srcdir)/lib/skkdic.rb $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/skkdic.rb $(@D)
 install-rb-default: $(RUBYLIBDIR)/ebdic.rb
-$(RUBYLIBDIR)/ebdic.rb: $(srcdir)/lib/ebdic.rb ./.RUBYLIBDIR.time
+$(RUBYLIBDIR)/ebdic.rb: $(srcdir)/lib/ebdic.rb $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/ebdic.rb $(@D)
 install-rb-default: $(RUBYLIBDIR)/conf.rb
-$(RUBYLIBDIR)/conf.rb: $(srcdir)/lib/conf.rb ./.RUBYLIBDIR.time
+$(RUBYLIBDIR)/conf.rb: $(srcdir)/lib/conf.rb $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/conf.rb $(@D)
 install-rb-default: $(RUBYLIBDIR)/nulldic.rb
-$(RUBYLIBDIR)/nulldic.rb: $(srcdir)/lib/nulldic.rb ./.RUBYLIBDIR.time
+$(RUBYLIBDIR)/nulldic.rb: $(srcdir)/lib/nulldic.rb $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/nulldic.rb $(@D)
-install-rb-default: $(RUBYLIBDIR)/googledic.rb
-$(RUBYLIBDIR)/googledic.rb: $(srcdir)/lib/googledic.rb ./.RUBYLIBDIR.time
-	$(Q) $(INSTALL_DATA) $(srcdir)/lib/googledic.rb $(@D)
 install-rb-default: $(RUBYLIBDIR)/skkservdic.rb
-$(RUBYLIBDIR)/skkservdic.rb: $(srcdir)/lib/skkservdic.rb ./.RUBYLIBDIR.time
+$(RUBYLIBDIR)/skkservdic.rb: $(srcdir)/lib/skkservdic.rb $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/skkservdic.rb $(@D)
+install-rb-default: $(RUBYLIBDIR)/googledic.rb
+$(RUBYLIBDIR)/googledic.rb: $(srcdir)/lib/googledic.rb $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
+	$(Q) $(INSTALL_DATA) $(srcdir)/lib/googledic.rb $(@D)
 install-rb-default: $(RUBYLIBDIR)/logger.rb
-$(RUBYLIBDIR)/logger.rb: $(srcdir)/lib/logger.rb ./.RUBYLIBDIR.time
+$(RUBYLIBDIR)/logger.rb: $(srcdir)/lib/logger.rb $(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time
 	$(Q) $(INSTALL_DATA) $(srcdir)/lib/logger.rb $(@D)
 pre-install-rb-default:
 	$(ECHO) installing default skkdic libraries
-./.RUBYARCHDIR.time:
-	$(Q) $(MAKEDIRS) $(RUBYARCHDIR)
+$(TIMESTAMP_DIR)/.RUBYARCHDIR.-.skkserv.time:
+	$(Q) $(MAKEDIRS) $(@D) $(RUBYARCHDIR)
 	$(Q) $(TOUCH) $@
-./.RUBYLIBDIR.time:
-	$(Q) $(MAKEDIRS) $(RUBYLIBDIR)
+$(TIMESTAMP_DIR)/.RUBYLIBDIR.-.skkserv.time:
+	$(Q) $(MAKEDIRS) $(@D) $(RUBYLIBDIR)
 	$(Q) $(TOUCH) $@
 
 site-install: site-install-so site-install-rb
@@ -263,10 +264,10 @@ $(DLLIB): $(OBJS) Makefile
 
 
 ###
-rsslibdir = /usr/local/lib/ruby/2.0
-rssarchdir = /usr/local/lib/ruby/2.0/x86_64-linux
+rsslibdir = /usr/local/lib/ruby/2.1
+rssarchdir = /usr/local/lib/ruby/2.1/x86_64-linux
 rss-install: $(rssarchdir)$(target_prefix)/$(DLLIB)
 $(rssarchdir)$(target_prefix)/$(DLLIB): $(DLLIB)
 	@$(RUBY) -r fileutils -e 'FileUtils::makedirs(ARGV)' $(rsslibdir) $(rssarchdir)$(target_prefix)
-	@$(RUBY) -r fileutils -e 'FileUtils::install(ARGV[0], ARGV[1], {:mode=>0555, :verbose=>true})' $(DLLIB) $(rssarchdir)$(target_prefix)/$(DLLIB)
+	@$(RUBY) -r fileutils -e 'FileUtils::install(ARGV[0], ARGV[1], 0555, true)' $(DLLIB) $(rssarchdir)$(target_prefix)/$(DLLIB)
 
