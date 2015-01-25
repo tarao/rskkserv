@@ -1,4 +1,4 @@
-#!/usr/bin/ruby 
+#!@RUBY@ 
 # coding: utf-8
 ### skkserv.rb --- rskkserv main routines         -*- Mode: Ruby -*-
 
@@ -7,7 +7,7 @@
 
 ## Author:	Shugo Maeda <shugo@aianet.ne.jp>
 ## Maintainer:	YAMASHITA Junji <ysjj@unixuser.org>
-## Version:	3.0.0
+## Version:	@VERSION@
 
 ## This file is part of rskkserv.
 
@@ -33,9 +33,9 @@ require "skkserv/skkdic"
 require "skkserv/googledic"
 
 class SKKServer
-  VERSION_STRING = "rskkserv-3.0.0 "
+  VERSION_STRING = "rskkserv-@VERSION@ "
   
-  DEFAULT_CONFILE = "/usr/local/etc/rskkserv.conf"
+  DEFAULT_CONFILE = "@sysconfdir@/rskkserv.conf"
 
   DEFAULT_PORT = 1178  
 
