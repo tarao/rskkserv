@@ -15,6 +15,6 @@ skk cache dir = @chachedir@
 
 dic = skk:@dicfile@
 # dic = skk:/usr/share/skk/SKK-JISYO.JIS2
-dic = google:https://www.google.com
+dic = google:www.google.com
 
 # rskkserv.conf ends here
