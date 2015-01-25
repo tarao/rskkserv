@@ -5,18 +5,16 @@ max_clients = 32
 
 daemon = true
 tcpwrap = true
-pid_file = /usr/local/var/run/rskkserv.pid
+pid_file = @piddir@/rskkserv.pid
 
-log_level = debug
-log_file = /usr/local/var/log/rskkserv.log
+log_level = @loglevel@
+log_file = @logdir@/rskkserv.log
 
 skk no cache = false
-skk cache dir = /usr/local/var/cache/rskkserv
+skk cache dir = @chachedir@
 
-dic = skk:/usr/share/skk/SKK-JISYO.L.utf-8
+dic = skk:@dicfile@
 # dic = skk:/usr/share/skk/SKK-JISYO.JIS2
-dic = skk:/usr/share/skk/SKK-JISYO.JIS3_4.utf-8
-# dic = skk:/home/keiichi/Downloads/skk/SKK-JISYO.L.utf-8
-dic = google:ipv6.google.com
+dic = google:https://www.google.com
 
 # rskkserv.conf ends here
