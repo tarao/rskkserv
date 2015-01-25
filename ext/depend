@@ -1,7 +1,0 @@
-rsslibdir = /usr/local/lib/ruby/2.1
-rssarchdir = /usr/local/lib/ruby/2.1/x86_64-linux
-rss-install: $(rssarchdir)$(target_prefix)/$(DLLIB)
-$(rssarchdir)$(target_prefix)/$(DLLIB): $(DLLIB)
-	@$(RUBY) -r fileutils -e 'FileUtils::makedirs(ARGV)' $(rsslibdir) $(rssarchdir)$(target_prefix)
-	@$(RUBY) -r fileutils -e 'FileUtils::install(ARGV[0], ARGV[1], 0555, true)' $(DLLIB) $(rssarchdir)$(target_prefix)/$(DLLIB)
-
