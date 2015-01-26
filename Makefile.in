@@ -15,7 +15,7 @@ prefix = @prefix@
 exec_prefix = @exec_prefix@
 sbindir = @sbindir@
 sysconfdir = @sysconfdir@
-
+datarootdir = @datarootdir@
 piddir = @piddir@
 logdir = @logdir@
 loglevel = @loglevel@
