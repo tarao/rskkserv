@@ -336,7 +336,17 @@ class SKKDictionary
 
       @search_agents.each do |agent|
         Logger::log_debug("agent: %s", agent)
-        tmp = agent.search(kana)
+        if /GOOGLEDic/ =~ agent.inspect
+          Logger::log_debug("candidates: %s", candidates)
+          if candidates.empty?
+            Logger::log_debug("kana: %s", kana)
+            tmp = agent.search(kana)
+          else
+            tmp = []
+          end
+        else
+            tmp = agent.search(kana)
+        end
 	    candidates |= tmp
         Logger::log_debug("tmp: %s", tmp);
       end
