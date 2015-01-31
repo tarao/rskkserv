@@ -7,6 +7,7 @@ require 'uri'
 class GOOGLEDic
   def initialize(path, mod = nil, subbook = nil)
     @path = path
+    @cache = Hash.new([])
     Logger::log(Logger::DEBUG, "Initiarized: %s", path)
     return true
   end
@@ -15,6 +16,9 @@ class GOOGLEDic
     if kana[-1].ascii_only? then
       Logger::log(Logger::DEBUG, "last char is %s", kana[-1])
       return []
+    end
+    if @cache[kana] != []
+      return @cache[kana]
     end
     begin
       params = "langpair=ja-Hira|ja&text=" + URI.escape(kana + ',')
@@ -29,6 +33,7 @@ class GOOGLEDic
         Logger::log(Logger::DEBUG, "encode: %s", tmp3.encoding)
         result.push(tmp3)
       end
+      @cache[kana] = result
     rescue
       raise if $!.to_s != "fail searching"
       result = []
