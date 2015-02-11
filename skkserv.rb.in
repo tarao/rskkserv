@@ -1,4 +1,5 @@
-#!@RUBY@
+#!@RUBY@ 
+# coding: utf-8
 ### skkserv.rb --- rskkserv main routines         -*- Mode: Ruby -*-
 
 ## Copyright (C) 1997-2000  Shugo Maeda
@@ -24,10 +25,12 @@
 
 require "thread"
 require "socket"
-require "getopts"
+require "optparse"
 
 require "skkserv/conf"
 require "skkserv/logger"
+require "skkserv/skkdic"
+require "skkserv/googledic"
 
 class SKKServer
   VERSION_STRING = "rskkserv-@VERSION@ "
@@ -40,6 +43,7 @@ class SKKServer
   CLIENT_REQUEST = ?1
   CLIENT_VERSION = ?2
   CLIENT_HOST = ?3
+  CLIENT_COMPLETION = ?4
   
   SERVER_ERROR = ?0
   SERVER_FOUND = ?1
@@ -49,18 +53,18 @@ class SKKServer
   BUFSIZE = 512
   
   def self.main
-    if $OPT_help
+    if $params["help"]
       usage
       exit(0)
     end
-    if $OPT_version
+    if $params["version"]
       print("SKK SERVER ", VERSION_STRING, "\n")
       exit(0)
     end
     
     skkserv = nil
     begin
-      @config = Conf.new($OPT_config || DEFAULT_CONFILE)
+      @config = Conf.new($params["config"] || DEFAULT_CONFILE)
 
       skkserv = new(ARGV[0], @config)
 
@@ -96,7 +100,7 @@ USAGE
   end
 
   def self.daemon?
-    @config.daemon and ! $OPT_d
+    @config.daemon and ! $params["d"]
   end
 
   def self.daemon
@@ -146,18 +150,18 @@ USAGE
 
   def initialize(dic, config)
     @config = config
-    Logger::level = $OPT_d ? Logger::DEBUG : @config.log_level
-    Logger::verbose = $OPT_verbose
+    Logger::level = $params["d"] ? Logger::DEBUG : @config.log_level
+    Logger::verbose = $params["verbose"]
     Logger::filename = @config.log_file
 
     Logger::log_debug("running on %s", host)
 
-    service = $OPT_p || @config.port || "skkserv"
+    service = $params["p"] || @config.port || "skkserv"
     begin
       @server = if @config.host
-		  TCPserver.open(@config.host, service)
+		  TCPServer.new(@config.host, service)
 		else
-		  TCPserver.open(service)
+		  TCPServer.new(service)
 		end
     rescue
       if service == "skkserv"
@@ -185,6 +189,7 @@ USAGE
   end
   
   def mainloop
+    comp_str = []
     accept_clients do |s|
       peer = peer_string(s)
       while cmdbuf = s.sysread(BUFSIZE)
@@ -193,7 +198,7 @@ USAGE
 	  Logger::log_debug("message from client %s: END", peer)
 	  break
 	when CLIENT_REQUEST
-#	  Logger::log_debug("message from client %s: WORD", peer)
+	  Logger::log_debug("message from client %s: WORD", peer)
 	  cmdend = cmdbuf.index(?\ ) || cmdbuf.index(?\n) 
 	  kana = cmdbuf[1 .. (cmdend - 1)]
 	  ret = ""
@@ -209,7 +214,7 @@ USAGE
             ret.concat(SERVER_ERROR)
             ret.concat($!)
           end
-#	  Logger::log_debug("send: \"%s\"", ret)
+	  Logger::log_debug("send: \"%s\"", ret)
 	  s.write(ret)
 	when CLIENT_VERSION
 	  Logger::log_debug("message from client %s: VERSION", peer)
@@ -220,6 +225,13 @@ USAGE
 	  Logger::log_debug("message from client %s: HOST", peer)
 	  Logger::log_debug("send: \"%s\"", ret)
 	  s.write(ret)
+    when CLIENT_COMPLETION
+      ret = ""
+      ret.concat(SERVER_FOUND)
+      ret.concat("/")
+      ret.concat("/\n")
+      Logger::log_debug("send: completion: %s", ret)
+      s.write(ret)
 	else
 	  Logger::log_notice("message from client %s: UNKNOWN: %d/\"%s\"",
 	      peer, cmdbuf[0], cmdbuf)
@@ -323,7 +335,20 @@ class SKKDictionary
       candidates = []
 
       @search_agents.each do |agent|
-	candidates |= agent.search(kana)
+        Logger::log_debug("agent: %s", agent)
+        if /GOOGLEDic/ =~ agent.inspect
+          Logger::log_debug("candidates: %s", candidates)
+          if candidates.empty?
+            Logger::log_debug("kana: %s", kana)
+            tmp = agent.search(kana)
+          else
+            tmp = []
+          end
+        else
+            tmp = agent.search(kana)
+        end
+	    candidates |= tmp
+        Logger::log_debug("tmp: %s", tmp);
       end
       return nil if candidates.empty?
 
@@ -359,7 +384,7 @@ class SKKDictionary
 end
 
 if $0 == __FILE__
-  getopts("d", "p:", "config:", "help", "verbose", "version")
+  $params = ARGV.getopts("d", "p:", "config:", "help", "verbose", "version")
   SKKServer.main
 end
 

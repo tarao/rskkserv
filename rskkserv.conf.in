@@ -14,5 +14,7 @@ skk no cache = false
 skk cache dir = @cachedir@
 
 dic = skk:@dicfile@
+# dic = skk:/usr/share/skk/SKK-JISYO.JIS2
+dic = google:www.google.com
 
 # rskkserv.conf ends here

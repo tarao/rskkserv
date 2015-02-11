@@ -1,3 +1,4 @@
+# coding: utf-8
 ### skkserv/skkdic.rb --- rskkserv module for skkdic format dictionary.
 
 ## Copyright (C) 1997-2000  Shugo Maeda
@@ -32,7 +33,7 @@ begin
   require "skkserv/skkdic.so"
 rescue LoadError
   Logger::log(Logger::WARNING, "%s: %s", $0, $!)
-#  raise RuntimeError, "can't load `skkserv/skkdic.so'" # for DEBUG
+  raise RuntimeError, "can't load `skkserv/skkdic.so'" # for DEBUG
 end
 
 class SKKDic

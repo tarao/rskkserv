@@ -30,8 +30,8 @@ def create_depend(libdir, archdir)
       f.print("$(rssarchdir)$(target_prefix)/$(DLLIB)\n")
       f.print <<EOMF
 $(rssarchdir)$(target_prefix)/$(DLLIB): $(DLLIB)
-	@$(RUBY) -r ftools -e 'File::makedirs(*ARGV)' $(rsslibdir) $(rssarchdir)$(target_prefix)
-	@$(RUBY) -r ftools -e 'File::install(ARGV[0], ARGV[1], 0555, true)' $(DLLIB) $(rssarchdir)$(target_prefix)/$(DLLIB)
+	@$(RUBY) -r fileutils -e 'FileUtils::makedirs(ARGV)' $(rsslibdir) $(rssarchdir)$(target_prefix)
+	@$(RUBY) -r fileutils -e 'FileUtils::install(ARGV[0], ARGV[1], {:mode => 0555, :verbose =>true})' $(DLLIB) $(rssarchdir)$(target_prefix)/$(DLLIB)
 EOMF
      install_rb(f, "$(rsslibdir)$(target_prefix)", srcdir)
      f.print "\n"
