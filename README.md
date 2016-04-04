@@ -12,5 +12,5 @@ INSTALL
 Changes
 =======
 
-1. Avairable for `Google CGI API for Japanese Input'
+1. Available for `Google CGI API for Japanese Input'
 2. Default String char code is UTF-8
